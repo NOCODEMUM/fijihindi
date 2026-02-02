@@ -3,21 +3,161 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #FFFDF7; /* coconut */
+  --foreground: #3D3D3D; /* charcoal */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.dark {
+  --background: #1A1A2E;
+  --foreground: #FFFDF7;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+}
+
+/* Custom scrollbar - island teal */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4ECDC4;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3DBEB5;
+}
+
+/* Globe styling */
+.globe-container {
+  background: radial-gradient(ellipse at center, #EEFBFA 0%, #FFFDF7 70%);
+}
+
+.dark .globe-container {
+  background: radial-gradient(ellipse at center, #1A1A2E 0%, #0D0D1A 70%);
+}
+
+/* Glassmorphism cards - warmer tones */
+.glass-card {
+  background: rgba(255, 253, 247, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(245, 230, 211, 0.5);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.dark .glass-card {
+  background: rgba(26, 26, 46, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* WhatsApp-style chat bubbles */
+.chat-bubble-received {
+  background: white;
+  border-radius: 18px 18px 18px 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.chat-bubble-sent {
+  background: #DCF8C6; /* WhatsApp green */
+  border-radius: 18px 18px 4px 18px;
+}
+
+/* Gradient text - mango to papaya */
+.gradient-text {
+  background: linear-gradient(135deg, #FFB347 0%, #FF8C42 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Island button styles */
+.btn-island {
+  background-color: #4ECDC4; /* lagoon */
+  color: white;
+  font-weight: 600;
+  border-radius: 1rem;
+  padding: 0.75rem 1.5rem;
+  box-shadow: 0 10px 15px -3px rgba(78, 205, 196, 0.2);
+  transition: all 0.2s ease;
+}
+
+.btn-island:hover {
+  background-color: #3DBEB5; /* lagoon-500 */
+}
+
+.btn-mango {
+  background-color: #FFB347; /* mango */
+  color: #3D3D3D; /* charcoal */
+  font-weight: 600;
+  border-radius: 1rem;
+  padding: 0.75rem 1.5rem;
+  box-shadow: 0 10px 15px -3px rgba(255, 179, 71, 0.3);
+  transition: all 0.2s ease;
+}
+
+.btn-mango:hover {
+  background-color: #F59E0B; /* mango-600 */
+}
+
+/* Animation utilities */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2s ease-out infinite;
+}
+
+/* Soft card hover */
+.card-hover {
+  transition: all 0.2s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* Safe area for mobile */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* Cultural accent - subtle pattern overlay */
+.pattern-dots {
+  background-image: radial-gradient(circle, #4ECDC4 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 0.03;
 }
 
 @layer utilities {
