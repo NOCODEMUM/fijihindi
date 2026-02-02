@@ -8,12 +8,15 @@ import AddMemberModal from "./components/AddMemberModal";
 import MemberDetailModal from "./components/MemberDetailModal";
 import { FamilyMember } from "./components/FamilyNode";
 import Button from "@/components/ui/Button";
+import SaveProgressPrompt from "@/app/components/SaveProgressPrompt";
+import { useAuth } from "@/app/contexts/AuthContext";
 
 // Generate unique IDs
 const generateId = () => Math.random().toString(36).substr(2, 9);
 
 export default function FamilyTreePage() {
   const router = useRouter();
+  const { user } = useAuth();
   const [members, setMembers] = useState<FamilyMember[]>([]);
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [detailModalOpen, setDetailModalOpen] = useState(false);
@@ -21,6 +24,7 @@ export default function FamilyTreePage() {
   const [selectedMemberForDetail, setSelectedMemberForDetail] = useState<FamilyMember | null>(
     null
   );
+  const [showSavePrompt, setShowSavePrompt] = useState(false);
 
   // Initialize with "self" node
   useEffect(() => {
@@ -44,6 +48,21 @@ export default function FamilyTreePage() {
       localStorage.setItem("fijihindi_family_tree", JSON.stringify(members));
     }
   }, [members]);
+
+  // Show save prompt after 5 family members (if not logged in)
+  useEffect(() => {
+    if (user) return; // Already logged in, don't prompt
+
+    const memberCount = members.length;
+    const remindAt = parseInt(localStorage.getItem("fijihindi_remind_save_at") || "5");
+    const hasBeenPrompted = localStorage.getItem("fijihindi_save_prompted");
+
+    // Show prompt at 5 members, then again every 3 more members
+    if (memberCount >= remindAt && !hasBeenPrompted) {
+      setShowSavePrompt(true);
+      localStorage.setItem("fijihindi_save_prompted", "true");
+    }
+  }, [members.length, user]);
 
   const handleAddRelative = useCallback((memberId: string) => {
     setSelectedMemberId(memberId);
@@ -195,6 +214,17 @@ export default function FamilyTreePage() {
         onClose={() => setDetailModalOpen(false)}
         member={selectedMemberForDetail}
         onDelete={handleDeleteMember}
+      />
+
+      {/* Save Progress Prompt (for non-logged-in users) */}
+      <SaveProgressPrompt
+        isOpen={showSavePrompt}
+        onClose={() => {
+          setShowSavePrompt(false);
+          // Reset prompted flag so it can show again later
+          localStorage.removeItem("fijihindi_save_prompted");
+        }}
+        familyMemberCount={members.length - 1}
       />
     </main>
   );

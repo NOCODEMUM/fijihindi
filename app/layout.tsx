@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Lato, Poppins } from "next/font/google";
 import "./globals.css";
+import { AuthProvider } from "./contexts/AuthContext";
 
 const lato = Lato({
   subsets: ["latin"],
@@ -50,7 +51,7 @@ export default function RootLayout({
       <body
         className={`${lato.variable} ${poppins.variable} font-sans antialiased bg-coconut`}
       >
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );
