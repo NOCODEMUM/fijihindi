@@ -1,11 +1,102 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
 
 export default function Home() {
   const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [signupCount, setSignupCount] = useState<number | null>(null);
+
+  // Check if user has already signed up (stored in localStorage)
+  useEffect(() => {
+    const hasSignedUp = localStorage.getItem("fijihindi_email_signup");
+    if (hasSignedUp) {
+      // User already signed up, they can skip the email gate
+      setEmail(hasSignedUp);
+    }
+
+    // Fetch signup count for social proof
+    fetchSignupCount();
+  }, []);
+
+  const fetchSignupCount = async () => {
+    try {
+      const response = await fetch("/api/signup/count");
+      if (response.ok) {
+        const data = await response.json();
+        setSignupCount(data.count);
+      }
+    } catch {
+      // Silently fail - social proof is optional
+    }
+  };
+
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    if (!email.trim()) {
+      setError("Please enter your email address");
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await fetch("/api/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email.trim().toLowerCase(),
+          source: "landing",
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // If email already exists, that's okay - let them proceed
+        if (data.code === "EMAIL_EXISTS") {
+          localStorage.setItem("fijihindi_email_signup", email.trim().toLowerCase());
+          router.push("/onboarding");
+          return;
+        }
+        throw new Error(data.error || "Failed to sign up");
+      }
+
+      // Store in localStorage so they don't have to sign up again
+      localStorage.setItem("fijihindi_email_signup", email.trim().toLowerCase());
+      router.push("/onboarding");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSkip = () => {
+    // Allow users to skip but track it
+    localStorage.setItem("fijihindi_email_signup", "skipped");
+    router.push("/onboarding");
+  };
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-6 globe-container">
@@ -22,7 +113,7 @@ export default function Home() {
         transition={{ duration: 0.8 }}
         className="relative z-10 text-center max-w-md mx-auto"
       >
-        {/* Logo/Icon placeholder */}
+        {/* Logo/Icon */}
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
@@ -55,34 +146,97 @@ export default function Home() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.7 }}
-          className="text-sm text-gray-500 dark:text-gray-400 mb-8"
+          className="text-sm text-gray-500 dark:text-gray-400 mb-6"
         >
           Our Language, Our Stories
         </motion.p>
 
-        {/* Description */}
-        <motion.p
+        {/* Value proposition bullets */}
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
-          className="text-charcoal/70 dark:text-white/70 mb-10 leading-relaxed"
+          className="text-left mb-8 bg-white/50 dark:bg-gray-800/50 rounded-2xl p-4 backdrop-blur-sm"
         >
-          Connect with Fiji Indians worldwide. Preserve our language. Share our stories.
-        </motion.p>
+          <ul className="space-y-2 text-sm text-charcoal/80 dark:text-white/80">
+            <li className="flex items-center gap-2">
+              <span className="text-primary">✓</span>
+              Learn family words in Fiji Hindi
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="text-primary">✓</span>
+              Build your family tree
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="text-primary">✓</span>
+              Connect with the global diaspora
+            </li>
+          </ul>
+        </motion.div>
 
-        {/* CTA Button */}
-        <motion.div
+        {/* Email capture form */}
+        <motion.form
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1 }}
+          transition={{ delay: 0.9 }}
+          onSubmit={handleSubmit}
+          className="space-y-4"
         >
+          <Input
+            type="email"
+            placeholder="your@email.com"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setError("");
+            }}
+            error={error}
+            className="text-center"
+          />
+
           <Button
+            type="submit"
             size="lg"
-            onClick={() => router.push("/onboarding")}
-            className="w-full sm:w-auto min-w-[200px]"
+            isLoading={isLoading}
+            className="w-full"
           >
-            Get Started
+            {isLoading ? "Joining..." : "Get Early Access"}
           </Button>
+        </motion.form>
+
+        {/* Skip option */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+          className="mt-4"
+        >
+          <button
+            onClick={handleSkip}
+            className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors underline underline-offset-2"
+          >
+            or skip and try now →
+          </button>
+        </motion.div>
+
+        {/* Social proof */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.1 }}
+          className="mt-6 text-sm text-gray-500 dark:text-gray-400"
+        >
+          {signupCount !== null && signupCount > 0 ? (
+            <span className="flex items-center justify-center gap-2">
+              <span>🌴</span>
+              Join {signupCount} {signupCount === 1 ? "family" : "families"} already exploring
+            </span>
+          ) : (
+            <span className="flex items-center justify-center gap-2">
+              <span>🌴</span>
+              Be among the first to explore
+            </span>
+          )}
         </motion.div>
 
         {/* Stats preview */}
@@ -90,7 +244,7 @@ export default function Home() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2 }}
-          className="mt-12 flex justify-center gap-8 text-sm text-gray-500 dark:text-gray-400"
+          className="mt-8 flex justify-center gap-8 text-sm text-gray-500 dark:text-gray-400"
         >
           <div className="text-center">
             <div className="text-2xl font-bold text-primary">195K+</div>

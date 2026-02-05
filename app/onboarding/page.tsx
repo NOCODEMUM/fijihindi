@@ -16,7 +16,7 @@ interface UserData {
   country: string;
   lat: number;
   lng: number;
-  origin: string;
+  origins: string[];
   faith: string;
 }
 
@@ -28,7 +28,7 @@ export default function OnboardingPage() {
     country: "",
     lat: 0,
     lng: 0,
-    origin: "",
+    origins: [],
     faith: "",
   });
 
@@ -40,8 +40,8 @@ export default function OnboardingPage() {
     []
   );
 
-  const handleOriginSubmit = useCallback((origin: string) => {
-    setUserData((prev) => ({ ...prev, origin }));
+  const handleOriginSubmit = useCallback((origins: string[]) => {
+    setUserData((prev) => ({ ...prev, origins }));
     setStep("faith");
   }, []);
 
@@ -138,7 +138,7 @@ export default function OnboardingPage() {
               <OriginStep
                 onNext={handleOriginSubmit}
                 onBack={() => setStep("location")}
-                initialOrigin={userData.origin}
+                initialOrigins={userData.origins}
               />
             </motion.div>
           )}

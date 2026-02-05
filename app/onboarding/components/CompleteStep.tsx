@@ -21,13 +21,16 @@ interface CompleteStepProps {
   userData: {
     city: string;
     country: string;
-    origin: string;
+    origins: string[];
   };
 }
 
 export default function CompleteStep({ onComplete, userData }: CompleteStepProps) {
   const [showGlobe, setShowGlobe] = useState(false);
-  const originName = FIJI_REGIONS.find((r) => r.id === userData.origin)?.name || "Fiji";
+  const originNames = userData.origins
+    .map((id) => FIJI_REGIONS.find((r) => r.id === id)?.name)
+    .filter(Boolean)
+    .join(", ") || "Fiji";
 
   useEffect(() => {
     const timer = setTimeout(() => setShowGlobe(true), 500);
@@ -79,7 +82,7 @@ export default function CompleteStep({ onComplete, userData }: CompleteStepProps
               {userData.city}, {userData.country}
             </div>
             <div className="text-sm text-gray-500 dark:text-gray-400">
-              Family from {originName}
+              Family from {originNames}
             </div>
           </div>
         </div>
