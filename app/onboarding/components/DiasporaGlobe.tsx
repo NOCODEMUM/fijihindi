@@ -21,11 +21,14 @@ function latLngToVector3(lat: number, lng: number, radius: number): THREE.Vector
 function EarthGlobe({ radius = 2 }: { radius?: number }) {
   const meshRef = useRef<THREE.Mesh>(null);
 
+  // Use a stylized earth texture - soft colors that match our palette
+  // This is a free-to-use NASA Blue Marble texture
   const texture = useLoader(
     THREE.TextureLoader,
     "https://unpkg.com/three-globe@2.31.0/example/img/earth-blue-marble.jpg"
   );
 
+  // Make the texture softer/more stylized
   useEffect(() => {
     if (texture) {
       texture.colorSpace = THREE.SRGBColorSpace;
@@ -48,6 +51,7 @@ function EarthGlobe({ radius = 2 }: { radius?: number }) {
 function AtmosphereGlow({ radius = 2 }: { radius?: number }) {
   return (
     <>
+      {/* Inner glow */}
       <Sphere args={[radius * 1.01, 32, 32]}>
         <meshBasicMaterial
           color="#4ECDC4"
@@ -56,6 +60,7 @@ function AtmosphereGlow({ radius = 2 }: { radius?: number }) {
           side={THREE.BackSide}
         />
       </Sphere>
+      {/* Outer glow */}
       <Sphere args={[radius * 1.05, 32, 32]}>
         <meshBasicMaterial
           color="#4ECDC4"
@@ -68,150 +73,112 @@ function AtmosphereGlow({ radius = 2 }: { radius?: number }) {
   );
 }
 
-// Fiji heartbeat pin
-function FijiPin({ radius = 2 }: { radius?: number }) {
-  const meshRef = useRef<THREE.Mesh>(null);
-  const ringRef = useRef<THREE.Mesh>(null);
+// Location pins on the globe
+function LocationPins({ radius = 2 }: { radius?: number }) {
+  const pinsRef = useRef<THREE.Group>(null);
 
   useFrame((state) => {
-    if (meshRef.current) {
-      const scale = 1 + Math.sin(state.clock.elapsedTime * 3) * 0.2;
-      meshRef.current.scale.setScalar(scale);
-    }
-    if (ringRef.current) {
-      const scale = 1 + Math.sin(state.clock.elapsedTime * 2) * 0.3;
-      ringRef.current.scale.setScalar(scale);
-      ringRef.current.material.opacity = 0.4 - Math.sin(state.clock.elapsedTime * 2) * 0.2;
+    if (pinsRef.current) {
+      pinsRef.current.children.forEach((child, i) => {
+        const mesh = child as THREE.Mesh;
+        const baseScale = mesh.userData.baseScale || 1;
+        mesh.scale.setScalar(
+          baseScale * (1 + Math.sin(state.clock.elapsedTime * 2 + i) * 0.15)
+        );
+      });
     }
   });
 
-  const fijiPos = latLngToVector3(FIJI_CENTER.lat, FIJI_CENTER.lng, radius + 0.08);
-
   return (
-    <group>
-      {/* Main Fiji pin */}
-      <mesh ref={meshRef} position={fijiPos}>
-        <sphereGeometry args={[0.08, 16, 16]} />
-        <meshBasicMaterial color="#FF8C42" />
+    <group ref={pinsRef}>
+      {/* Fiji heartbeat pin - larger and orange/mango */}
+      <mesh position={latLngToVector3(FIJI_CENTER.lat, FIJI_CENTER.lng, radius + 0.1)}>
+        <sphereGeometry args={[0.1, 16, 16]} />
+        <meshBasicMaterial color="#FF8C42" /> {/* papaya */}
       </mesh>
-      {/* Pulsing ring */}
+
+      {/* Fiji glow ring */}
       <mesh
-        ref={ringRef}
         position={latLngToVector3(FIJI_CENTER.lat, FIJI_CENTER.lng, radius + 0.02)}
         rotation={[Math.PI / 2, 0, 0]}
       >
-        <ringGeometry args={[0.1, 0.15, 32]} />
+        <ringGeometry args={[0.12, 0.18, 32]} />
         <meshBasicMaterial color="#FF8C42" transparent opacity={0.4} side={THREE.DoubleSide} />
       </mesh>
+
+      {/* Diaspora pins */}
+      {DIASPORA_COUNTRIES.map((loc, index) => {
+        const pos = latLngToVector3(loc.lat, loc.lng, radius + 0.06);
+        const size = Math.min(0.07, 0.03 + (loc.count / 50000) * 0.04);
+
+        // Color cycle: lagoon, hibiscus, mango
+        const colors = ["#4ECDC4", "#E8A0BF", "#FFB347"];
+        const color = colors[index % 3];
+
+        return (
+          <mesh
+            key={`${loc.city}-${loc.country}`}
+            position={pos}
+            userData={{ baseScale: 1 }}
+          >
+            <sphereGeometry args={[size, 12, 12]} />
+            <meshBasicMaterial color={color} transparent opacity={0.95} />
+          </mesh>
+        );
+      })}
     </group>
   );
 }
 
-// Flying dots that animate from Fiji to destinations
-function FlyingDots({ radius = 2 }: { radius?: number }) {
-  const dotsRef = useRef<THREE.InstancedMesh>(null);
-  const [animationStarted, setAnimationStarted] = useState(false);
-
-  // Generate dots - 1 dot per 500 people, max 500 dots total for performance
-  const dots = useMemo(() => {
-    const allDots: { destLat: number; destLng: number; delay: number; color: string }[] = [];
-
-    DIASPORA_COUNTRIES.forEach((loc, locIndex) => {
-      // Number of dots for this location (1 per 500 people, min 1, max 50 per location)
-      const dotCount = Math.min(50, Math.max(1, Math.floor(loc.count / 500)));
-
-      // Colors cycle through our palette
-      const colors = ["#4ECDC4", "#E8A0BF", "#FFB347", "#FF8C42"];
-
-      for (let i = 0; i < dotCount; i++) {
-        // Add slight randomness to position so dots don't stack perfectly
-        const latOffset = (Math.random() - 0.5) * 3;
-        const lngOffset = (Math.random() - 0.5) * 3;
-
-        allDots.push({
-          destLat: loc.lat + latOffset,
-          destLng: loc.lng + lngOffset,
-          delay: locIndex * 0.1 + i * 0.02, // Stagger by location and dot
-          color: colors[locIndex % colors.length],
-        });
-      }
-    });
-
-    return allDots.slice(0, 400); // Cap at 400 dots for performance
-  }, []);
-
-  // Animation progress for each dot (0 = at Fiji, 1 = at destination)
-  const progressRef = useRef<Float32Array>(new Float32Array(dots.length).fill(0));
-  const startTimeRef = useRef<number>(0);
+// Connection arcs from Fiji to diaspora
+function ConnectionArcs({ radius = 2 }: { radius?: number }) {
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setAnimationStarted(true);
-      startTimeRef.current = Date.now();
-    }, 1000); // Start animation after 1 second
+    const timer = setTimeout(() => setVisible(true), 1500);
     return () => clearTimeout(timer);
   }, []);
 
-  const fijiPos = latLngToVector3(FIJI_CENTER.lat, FIJI_CENTER.lng, radius + 0.05);
-  const dummy = useMemo(() => new THREE.Object3D(), []);
-  const colorArray = useMemo(() => {
-    const colors = new Float32Array(dots.length * 3);
-    dots.forEach((dot, i) => {
-      const color = new THREE.Color(dot.color);
-      colors[i * 3] = color.r;
-      colors[i * 3 + 1] = color.g;
-      colors[i * 3 + 2] = color.b;
+  const curves = useMemo(() => {
+    return DIASPORA_COUNTRIES.slice(0, 10).map((loc) => {
+      const start = latLngToVector3(FIJI_CENTER.lat, FIJI_CENTER.lng, radius);
+      const end = latLngToVector3(loc.lat, loc.lng, radius);
+
+      // Create curved arc
+      const midPoint = new THREE.Vector3()
+        .addVectors(start, end)
+        .multiplyScalar(0.5)
+        .normalize()
+        .multiplyScalar(radius * 1.25);
+
+      const curve = new THREE.QuadraticBezierCurve3(start, midPoint, end);
+      return curve.getPoints(50);
     });
-    return colors;
-  }, [dots]);
+  }, [radius]);
 
-  useFrame(() => {
-    if (!dotsRef.current || !animationStarted) return;
-
-    const elapsed = (Date.now() - startTimeRef.current) / 1000;
-
-    dots.forEach((dot, i) => {
-      // Calculate progress with easing
-      const rawProgress = Math.max(0, (elapsed - dot.delay) / 2); // 2 second flight time
-      const progress = Math.min(1, rawProgress * rawProgress * (3 - 2 * rawProgress)); // Smooth easing
-      progressRef.current[i] = progress;
-
-      // Calculate position along arc from Fiji to destination
-      const destPos = latLngToVector3(dot.destLat, dot.destLng, radius + 0.05);
-
-      // Create arc by interpolating and lifting the midpoint
-      const midPoint = new THREE.Vector3().lerpVectors(fijiPos, destPos, 0.5);
-      midPoint.normalize().multiplyScalar(radius + 0.4); // Lift arc above surface
-
-      // Quadratic bezier interpolation
-      const t = progress;
-      const pos = new THREE.Vector3();
-      pos.x = (1 - t) * (1 - t) * fijiPos.x + 2 * (1 - t) * t * midPoint.x + t * t * destPos.x;
-      pos.y = (1 - t) * (1 - t) * fijiPos.y + 2 * (1 - t) * t * midPoint.y + t * t * destPos.y;
-      pos.z = (1 - t) * (1 - t) * fijiPos.z + 2 * (1 - t) * t * midPoint.z + t * t * destPos.z;
-
-      dummy.position.copy(pos);
-
-      // Scale: small while flying, grow when landed
-      const scale = progress < 1 ? 0.015 : 0.02;
-      dummy.scale.setScalar(scale);
-
-      dummy.updateMatrix();
-      dotsRef.current!.setMatrixAt(i, dummy.matrix);
-    });
-
-    dotsRef.current.instanceMatrix.needsUpdate = true;
-  });
+  if (!visible) return null;
 
   return (
-    <instancedMesh ref={dotsRef} args={[undefined, undefined, dots.length]}>
-      <sphereGeometry args={[1, 8, 8]} />
-      <meshBasicMaterial vertexColors />
-      <instancedBufferAttribute
-        attach="geometry-attributes-color"
-        args={[colorArray, 3]}
-      />
-    </instancedMesh>
+    <group>
+      {curves.map((points, index) => (
+        <line key={index}>
+          <bufferGeometry>
+            <bufferAttribute
+              attach="attributes-position"
+              count={points.length}
+              array={new Float32Array(points.flatMap((p) => [p.x, p.y, p.z]))}
+              itemSize={3}
+            />
+          </bufferGeometry>
+          <lineBasicMaterial
+            color="#4ECDC4"
+            transparent
+            opacity={0.5}
+            linewidth={1}
+          />
+        </line>
+      ))}
+    </group>
   );
 }
 
@@ -221,7 +188,7 @@ function RotatingGlobe() {
 
   useFrame(() => {
     if (groupRef.current) {
-      groupRef.current.rotation.y += 0.001; // Slower rotation
+      groupRef.current.rotation.y += 0.002;
     }
   });
 
@@ -229,8 +196,8 @@ function RotatingGlobe() {
     <group ref={groupRef}>
       <AtmosphereGlow radius={2} />
       <EarthGlobe radius={2} />
-      <FijiPin radius={2} />
-      <FlyingDots radius={2} />
+      <LocationPins radius={2} />
+      <ConnectionArcs radius={2} />
     </group>
   );
 }
@@ -283,7 +250,7 @@ function CameraController() {
       enableZoom={false}
       enablePan={false}
       autoRotate
-      autoRotateSpeed={0.2}
+      autoRotateSpeed={0.3}
       minPolarAngle={Math.PI / 3}
       maxPolarAngle={Math.PI / 1.5}
     />
