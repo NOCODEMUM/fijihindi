@@ -88,8 +88,10 @@ const config: Config = {
         accent: "#FFB347", // mango as accent
       },
       fontFamily: {
-        sans: ["var(--font-lato)", "system-ui", "sans-serif"],
+        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
         heading: ["var(--font-poppins)", "system-ui", "sans-serif"],
+        display: ["var(--font-poppins)", "system-ui", "sans-serif"],
+        phrase: ["var(--font-merriweather)", "Georgia", "serif"],
       },
       borderRadius: {
         "2xl": "1rem",

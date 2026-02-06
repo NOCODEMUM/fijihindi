@@ -1,21 +1,32 @@
 import type { Metadata, Viewport } from "next";
-import { Lato, Poppins } from "next/font/google";
+import { Poppins, Merriweather, Inter } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { AuthProvider } from "./contexts/AuthContext";
+import { ConversationProvider } from "./contexts/ConversationContext";
 import FeedbackButton from "./components/FeedbackButton";
 
-const lato = Lato({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  variable: "--font-lato",
-  display: "swap",
-});
-
+// Poppins - for headings
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-poppins",
+  display: "swap",
+});
+
+// Merriweather - for Fiji Hindi phrases
+const merriweather = Merriweather({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-merriweather",
+  display: "swap",
+});
+
+// Inter - for body/descriptions
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-inter",
   display: "swap",
 });
 
@@ -65,11 +76,13 @@ export default function RootLayout({
         </Script>
       </head>
       <body
-        className={`${lato.variable} ${poppins.variable} font-sans antialiased bg-coconut`}
+        className={`${poppins.variable} ${merriweather.variable} ${inter.variable} font-sans antialiased bg-coconut`}
       >
         <AuthProvider>
-          {children}
-          <FeedbackButton />
+          <ConversationProvider>
+            {children}
+            <FeedbackButton />
+          </ConversationProvider>
         </AuthProvider>
       </body>
     </html>

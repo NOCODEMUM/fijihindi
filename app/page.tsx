@@ -1,268 +1,115 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import Button from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
 
 export default function Home() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [signupCount, setSignupCount] = useState<number | null>(null);
 
-  // Check if user has already signed up (stored in localStorage)
-  useEffect(() => {
-    const hasSignedUp = localStorage.getItem("fijihindi_email_signup");
-    if (hasSignedUp) {
-      // User already signed up, they can skip the email gate
-      setEmail(hasSignedUp);
-    }
-
-    // Fetch signup count for social proof
-    fetchSignupCount();
-  }, []);
-
-  const fetchSignupCount = async () => {
-    try {
-      const response = await fetch("/api/signup/count");
-      if (response.ok) {
-        const data = await response.json();
-        setSignupCount(data.count);
-      }
-    } catch {
-      // Silently fail - social proof is optional
-    }
-  };
-
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-
-    if (!email.trim()) {
-      setError("Please enter your email address");
-      return;
-    }
-
-    if (!validateEmail(email)) {
-      setError("Please enter a valid email address");
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      const response = await fetch("/api/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: email.trim().toLowerCase(),
-          source: "landing",
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        // If email already exists, that's okay - let them proceed
-        if (data.code === "EMAIL_EXISTS") {
-          localStorage.setItem("fijihindi_email_signup", email.trim().toLowerCase());
-          router.push("/onboarding");
-          return;
-        }
-        throw new Error(data.error || "Failed to sign up");
-      }
-
-      // Store in localStorage so they don't have to sign up again
-      localStorage.setItem("fijihindi_email_signup", email.trim().toLowerCase());
-      router.push("/onboarding");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSkip = () => {
-    // Allow users to skip but track it
-    localStorage.setItem("fijihindi_email_signup", "skipped");
+  const handleStart = () => {
     router.push("/onboarding");
   };
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center p-6 globe-container">
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-32 h-32 bg-primary/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-40 h-40 bg-secondary/10 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
-      </div>
+    <main className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden bg-gradient-to-br from-coconut via-peach-50 to-lagoon-50">
+      {/* Decorative blur circles */}
+      <div className="absolute top-0 left-0 w-72 h-72 bg-lagoon/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+      <div className="absolute top-1/4 right-0 w-96 h-96 bg-peach/20 rounded-full blur-3xl translate-x-1/2" />
+      <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-primary/10 rounded-full blur-3xl translate-y-1/2" />
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="relative z-10 text-center max-w-md mx-auto"
-      >
-        {/* Logo/Icon */}
+      {/* Content */}
+      <div className="relative z-10 flex flex-col items-center justify-center px-6 py-12 text-center max-w-lg">
+        {/* Logo */}
         <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-          className="w-24 h-24 mx-auto mb-8 rounded-3xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-2xl shadow-primary/30"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6 }}
+          className="mb-4"
         >
-          <span className="text-4xl">🌴</span>
+          <Image
+            src="/logo.webp"
+            alt="FijiHindi"
+            width={240}
+            height={80}
+            className="object-contain"
+            priority
+          />
         </motion.div>
-
-        {/* App name */}
-        <motion.h1
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="text-4xl md:text-5xl font-heading font-bold mb-4"
-        >
-          <span className="gradient-text">FijiHindi</span>
-        </motion.h1>
 
         {/* Tagline */}
         <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
-          className="text-xl md:text-2xl text-charcoal/80 dark:text-white/80 font-medium mb-2"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="text-lg md:text-xl text-charcoal/70 font-merriweather italic mb-8"
         >
           Hamaar Bhasha, Hamaar Kahani
         </motion.p>
+
+        {/* Subtitle */}
         <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.7 }}
-          className="text-sm text-gray-500 dark:text-gray-400 mb-6"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="text-charcoal/80 mb-10 text-base md:text-lg leading-relaxed"
         >
-          Our Language, Our Stories
+          Learn Fiji Hindi through conversations with your Nani.
+          No pressure—just chai and stories.
         </motion.p>
 
-        {/* Value proposition bullets */}
+        {/* CTA Button */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          className="text-left mb-8 bg-white/50 dark:bg-gray-800/50 rounded-2xl p-4 backdrop-blur-sm"
-        >
-          <ul className="space-y-2 text-sm text-charcoal/80 dark:text-white/80">
-            <li className="flex items-center gap-2">
-              <span className="text-primary">✓</span>
-              Learn family words in Fiji Hindi
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-primary">✓</span>
-              Build your family tree
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-primary">✓</span>
-              Connect with the global diaspora
-            </li>
-          </ul>
-        </motion.div>
-
-        {/* Email capture form */}
-        <motion.form
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.9 }}
-          onSubmit={handleSubmit}
-          className="space-y-4"
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="w-full max-w-xs mb-12"
         >
-          <Input
-            type="email"
-            placeholder="your@email.com"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              setError("");
-            }}
-            error={error}
-            className="text-center"
-          />
-
           <Button
-            type="submit"
+            onClick={handleStart}
             size="lg"
-            isLoading={isLoading}
-            className="w-full"
+            fullWidth
+            className="bg-primary hover:bg-primary-600 text-white py-4 text-lg rounded-2xl shadow-lg shadow-primary/30 transition-all hover:shadow-xl hover:scale-[1.02]"
           >
-            {isLoading ? "Joining..." : "Get Early Access"}
+            Get Started
           </Button>
-        </motion.form>
+          <p className="text-center text-sm text-charcoal/50 mt-3">
+            No signup needed
+          </p>
+        </motion.div>
 
-        {/* Skip option */}
+        {/* Stats */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-          className="mt-4"
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="flex flex-wrap justify-center gap-6 md:gap-10 text-charcoal/60"
         >
-          <button
-            onClick={handleSkip}
-            className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors underline underline-offset-2"
-          >
-            or skip and try now →
-          </button>
+          <div className="text-center">
+            <p className="text-2xl md:text-3xl font-bold text-primary">195K+</p>
+            <p className="text-xs md:text-sm">Fiji Indians</p>
+          </div>
+          <div className="text-center">
+            <p className="text-2xl md:text-3xl font-bold text-lagoon">50+</p>
+            <p className="text-xs md:text-sm">Countries</p>
+          </div>
+          <div className="text-center">
+            <p className="text-2xl md:text-3xl font-bold text-accent">140+</p>
+            <p className="text-xs md:text-sm">Years of History</p>
+          </div>
         </motion.div>
+      </div>
 
-        {/* Social proof */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.1 }}
-          className="mt-6 text-sm text-gray-500 dark:text-gray-400"
-        >
-          {signupCount !== null && signupCount > 0 ? (
-            <span className="flex items-center justify-center gap-2">
-              <span>🌴</span>
-              Join {signupCount} {signupCount === 1 ? "family" : "families"} already exploring
-            </span>
-          ) : (
-            <span className="flex items-center justify-center gap-2">
-              <span>🌴</span>
-              Be among the first to explore
-            </span>
-          )}
-        </motion.div>
-
-        {/* Stats preview */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
-          className="mt-8 flex justify-center gap-8 text-sm text-gray-500 dark:text-gray-400"
-        >
-          <div className="text-center">
-            <div className="text-2xl font-bold text-primary">195K+</div>
-            <div>Fiji Indians</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-secondary">50+</div>
-            <div>Countries</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-accent">140+</div>
-            <div>Years of History</div>
-          </div>
-        </motion.div>
+      {/* Bottom decorative element */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 0.8 }}
+        className="absolute bottom-6 text-center text-charcoal/40 text-sm"
+      >
+        🌴 Connecting the Fiji Indian diaspora worldwide
       </motion.div>
-
-      {/* Bottom wave decoration */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-secondary/5 to-transparent pointer-events-none" />
     </main>
   );
 }

@@ -1,18 +1,39 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import TreeCanvas from "./components/TreeCanvas";
 import AddMemberModal from "./components/AddMemberModal";
 import MemberDetailModal from "./components/MemberDetailModal";
 import { FamilyMember } from "./components/FamilyNode";
 import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
+import BottomNav from "@/components/ui/BottomNav";
 import SaveProgressPrompt from "@/app/components/SaveProgressPrompt";
 import { useAuth } from "@/app/contexts/AuthContext";
+import { speakFijiHindi } from "@/lib/audio";
 
 // Generate unique IDs
 const generateId = () => Math.random().toString(36).substr(2, 9);
+
+// Common relationship terms to display
+const RELATIONSHIP_TERMS = [
+  { fijiHindi: "Maa", english: "Mother", emoji: "👩" },
+  { fijiHindi: "Baap", english: "Father", emoji: "👨" },
+  { fijiHindi: "Nani", english: "Grandmother (maternal)", emoji: "👵" },
+  { fijiHindi: "Nana", english: "Grandfather (maternal)", emoji: "👴" },
+  { fijiHindi: "Dadi", english: "Grandmother (paternal)", emoji: "👵" },
+  { fijiHindi: "Dada", english: "Grandfather (paternal)", emoji: "👴" },
+  { fijiHindi: "Bhai", english: "Brother", emoji: "👦" },
+  { fijiHindi: "Bahin", english: "Sister", emoji: "👧" },
+  { fijiHindi: "Beta", english: "Son", emoji: "👦" },
+  { fijiHindi: "Beti", english: "Daughter", emoji: "👧" },
+  { fijiHindi: "Chacha", english: "Uncle (paternal)", emoji: "👨" },
+  { fijiHindi: "Chachi", english: "Aunt (paternal)", emoji: "👩" },
+  { fijiHindi: "Mama", english: "Uncle (maternal)", emoji: "👨" },
+  { fijiHindi: "Mami", english: "Aunt (maternal)", emoji: "👩" },
+];
 
 export default function FamilyTreePage() {
   const router = useRouter();
@@ -25,6 +46,8 @@ export default function FamilyTreePage() {
     null
   );
   const [showSavePrompt, setShowSavePrompt] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+  const [playingTerm, setPlayingTerm] = useState<string | null>(null);
 
   // Initialize with "self" node
   useEffect(() => {
@@ -102,10 +125,18 @@ export default function FamilyTreePage() {
     });
   }, []);
 
+  const handlePlayTerm = (term: string) => {
+    setPlayingTerm(term);
+    speakFijiHindi(term, {
+      onEnd: () => setPlayingTerm(null),
+      onError: () => setPlayingTerm(null),
+    });
+  };
+
   const selectedMember = members.find((m) => m.id === selectedMemberId);
 
   return (
-    <main className="min-h-screen bg-background-light dark:bg-background-dark">
+    <main className="min-h-screen bg-coconut dark:bg-background-dark pb-24">
       {/* Header */}
       <motion.header
         initial={{ opacity: 0, y: -20 }}
@@ -142,7 +173,7 @@ export default function FamilyTreePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1 }}
-          className="fixed bottom-24 left-1/2 transform -translate-x-1/2 glass-card rounded-xl px-6 py-3 shadow-lg"
+          className="fixed bottom-32 left-1/2 transform -translate-x-1/2 glass-card rounded-xl px-6 py-3 shadow-lg"
         >
           <p className="text-sm text-charcoal dark:text-white">
             👆 Tap <span className="text-primary font-bold">+</span> on yourself to start adding family!
@@ -150,54 +181,92 @@ export default function FamilyTreePage() {
         </motion.div>
       )}
 
-      {/* Bottom navigation */}
-      <motion.nav
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-t border-gray-100 dark:border-gray-800 safe-area-bottom"
-      >
-        <div className="max-w-4xl mx-auto px-4 py-4 flex justify-around">
-          <button
-            onClick={() => router.push("/dashboard")}
-            className="flex flex-col items-center gap-1 text-gray-500 dark:text-gray-400 hover:text-primary transition-colors"
+      {/* Relationship Terms Section */}
+      <div className="max-w-4xl mx-auto px-4 mt-6">
+        <motion.button
+          onClick={() => setShowTerms(!showTerms)}
+          className="w-full flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm"
+        >
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">📚</span>
+            <div className="text-left">
+              <p className="font-medium text-charcoal dark:text-white">
+                Relationship Terms
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Learn family words in Fiji Hindi
+              </p>
+            </div>
+          </div>
+          <motion.svg
+            animate={{ rotate: showTerms ? 180 : 0 }}
+            className="w-5 h-5 text-gray-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-              />
-            </svg>
-            <span className="text-xs">Home</span>
-          </button>
-          <button className="flex flex-col items-center gap-1 text-primary">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-              />
-            </svg>
-            <span className="text-xs">Family</span>
-          </button>
-          <button
-            onClick={() => router.push("/onboarding")}
-            className="flex flex-col items-center gap-1 text-gray-500 dark:text-gray-400 hover:text-primary transition-colors"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <span className="text-xs">Map</span>
-          </button>
-        </div>
-      </motion.nav>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </motion.svg>
+        </motion.button>
+
+        <AnimatePresence>
+          {showTerms && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="overflow-hidden"
+            >
+              <Card variant="default" className="mt-2 divide-y divide-gray-100 dark:divide-gray-800">
+                {RELATIONSHIP_TERMS.map((term, index) => (
+                  <motion.div
+                    key={term.fijiHindi}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.03 }}
+                    className="px-4 py-3 flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl">{term.emoji}</span>
+                      <div>
+                        <p className="font-medium text-charcoal dark:text-white">
+                          {term.fijiHindi}
+                        </p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          {term.english}
+                        </p>
+                      </div>
+                    </div>
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => handlePlayTerm(term.fijiHindi)}
+                      className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                        playingTerm === term.fijiHindi
+                          ? "bg-primary text-white"
+                          : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+                      }`}
+                    >
+                      {playingTerm === term.fijiHindi ? (
+                        <motion.div
+                          animate={{ scale: [1, 1.2, 1] }}
+                          transition={{ duration: 0.5, repeat: Infinity }}
+                        >
+                          🔊
+                        </motion.div>
+                      ) : (
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                        </svg>
+                      )}
+                    </motion.button>
+                  </motion.div>
+                ))}
+              </Card>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       {/* Add Member Modal */}
       <AddMemberModal
@@ -226,6 +295,9 @@ export default function FamilyTreePage() {
         }}
         familyMemberCount={members.length - 1}
       />
+
+      {/* Bottom Navigation */}
+      <BottomNav />
     </main>
   );
 }

@@ -77,14 +77,21 @@ export const FAITH_OPTIONS = [
   },
 ] as const;
 
-// Onboarding steps
+// Onboarding steps (new conversation-based flow)
 export const ONBOARDING_STEPS = [
-  { id: "welcome", title: "Welcome" },
-  { id: "location", title: "Your Location" },
+  { id: "hook", title: "Hook" },
+  { id: "info", title: "Your Info" },
   { id: "origin", title: "Family Origin" },
-  { id: "faith", title: "Family Faith" },
-  { id: "complete", title: "Complete" },
+  { id: "family", title: "Family Setup" },
+  { id: "firstCall", title: "First Call" },
 ] as const;
+
+// Conversation difficulties
+export const CONVERSATION_DIFFICULTIES = {
+  beginner: { label: "Beginner", color: "green" },
+  intermediate: { label: "Intermediate", color: "yellow" },
+  advanced: { label: "Advanced", color: "red" },
+} as const;
 
 // App theme colors
 export const COLORS = {

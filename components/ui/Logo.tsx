@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 interface LogoProps {
   size?: "sm" | "md" | "lg";
@@ -9,10 +10,10 @@ interface LogoProps {
 }
 
 export default function Logo({ size = "md", showTagline = false, className = "" }: LogoProps) {
-  const sizes = {
-    sm: "text-xl",
-    md: "text-3xl",
-    lg: "text-5xl",
+  const imageSizes = {
+    sm: { width: 100, height: 40 },
+    md: { width: 150, height: 60 },
+    lg: { width: 250, height: 100 },
   };
 
   const taglineSizes = {
@@ -26,17 +27,15 @@ export default function Logo({ size = "md", showTagline = false, className = "" 
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`font-heading italic font-bold ${sizes[size]} text-charcoal dark:text-white`}
       >
-        <span className="relative">
-          <span className="absolute -top-2 -left-1 text-base">🥥</span>
-          <span className="ml-4">fiji</span>
-        </span>
-        {" "}
-        <span className="text-primary relative">
-          hindi
-          <span className="absolute -top-2 -right-3 text-base">🥥</span>
-        </span>
+        <Image
+          src="/logo.webp"
+          alt="Fiji Hindi"
+          width={imageSizes[size].width}
+          height={imageSizes[size].height}
+          className="object-contain"
+          priority
+        />
       </motion.div>
       {showTagline && (
         <motion.p

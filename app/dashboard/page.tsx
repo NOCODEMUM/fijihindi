@@ -3,39 +3,41 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
-import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Logo from "@/components/ui/Logo";
-import LessonCard from "@/components/ui/LessonCard";
-import ProgressBar from "@/components/ui/ProgressBar";
+import PhoneButton from "@/components/ui/PhoneButton";
+import StreakBadge from "@/components/ui/StreakBadge";
+import BottomNav from "@/components/ui/BottomNav";
 import { FIJI_REGIONS, TOTAL_DIASPORA_COUNT } from "@/lib/constants";
-import { speakFijiHindi } from "@/lib/audio";
-
-const DiasporaGlobe = dynamic(
-  () => import("../onboarding/components/DiasporaGlobe"),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="w-full h-[250px] flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-      </div>
-    ),
-  }
-);
+import { getAllConversations, Conversation } from "@/data/conversations/intro-greeting";
 
 interface UserData {
+  name: string;
   city: string;
   country: string;
-  origin: string;
+  origins: string[];
+}
+
+interface Progress {
+  conversationsCompleted: string[];
+  phrasesLearned: string[];
+  currentStreak: number;
+  lastActivityDate: string | null;
+  totalCalls: number;
 }
 
 export default function DashboardPage() {
   const router = useRouter();
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [familyCount, setFamilyCount] = useState(0);
+  const [progress, setProgress] = useState<Progress>({
+    conversationsCompleted: [],
+    phrasesLearned: [],
+    currentStreak: 0,
+    lastActivityDate: null,
+    totalCalls: 0,
+  });
   const [greeting, setGreeting] = useState("");
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
 
   useEffect(() => {
     // Check if user completed onboarding
@@ -51,66 +53,47 @@ export default function DashboardPage() {
       setUserData(JSON.parse(stored));
     }
 
-    // Load family tree count
-    const familyTree = localStorage.getItem("fijihindi_family_tree");
-    if (familyTree) {
-      const members = JSON.parse(familyTree);
-      setFamilyCount(members.length - 1); // Exclude self
+    // Load progress
+    const progressStr = localStorage.getItem("fijihindi_progress");
+    if (progressStr) {
+      setProgress(JSON.parse(progressStr));
     }
+
+    // Load conversations
+    setConversations(getAllConversations());
 
     // Set greeting based on time
     const hour = new Date().getHours();
-    if (hour < 12) setGreeting("Good morning!");
-    else if (hour < 17) setGreeting("Good afternoon!");
-    else setGreeting("Good evening!");
+    if (hour < 12) setGreeting("Good morning");
+    else if (hour < 17) setGreeting("Good afternoon");
+    else setGreeting("Good evening");
   }, [router]);
 
-  const originName =
-    FIJI_REGIONS.find((r) => r.id === userData?.origin)?.name || "Fiji";
+  const originNames = userData?.origins
+    ?.map((id) => FIJI_REGIONS.find((r) => r.id === id)?.name)
+    .filter(Boolean)
+    .join(", ") || "Fiji";
 
-  const features = [
-    {
-      id: "family-tree",
-      title: "Family Tree",
-      subtitle: "Learn relationship terms",
-      icon: "👨‍👩‍👧‍👦",
-      badge: `${familyCount} member${familyCount !== 1 ? "s" : ""}`,
-      badgeColor: "primary" as const,
-      href: "/family-tree",
-      disabled: false,
-    },
-    {
-      id: "lessons",
-      title: "Daily Lessons",
-      subtitle: "Situational phrases",
-      icon: "📚",
-      badge: "Coming Soon",
-      badgeColor: "secondary" as const,
-      href: "/lessons",
-      disabled: true,
-    },
-    {
-      id: "stories",
-      title: "Elder Stories",
-      subtitle: "Preserve family stories",
-      icon: "🎙️",
-      badge: "Coming Soon",
-      badgeColor: "secondary" as const,
-      href: "/stories",
-      disabled: true,
-    },
-  ];
+  const handleCallNani = () => {
+    // Find the next incomplete conversation
+    const nextConversation = conversations.find(
+      (c) => !progress.conversationsCompleted.includes(c.id)
+    );
 
-  const handlePlayPhrase = () => {
-    setIsPlaying(true);
-    speakFijiHindi("Kaise ho", {
-      onEnd: () => setIsPlaying(false),
-      onError: () => setIsPlaying(false),
-    });
+    if (nextConversation) {
+      router.push(`/call?id=${nextConversation.id}`);
+    } else {
+      // All completed, start from beginning
+      router.push(`/call?id=${conversations[0]?.id || "intro-greeting"}`);
+    }
   };
 
+  const completedConversations = conversations.filter((c) =>
+    progress.conversationsCompleted.includes(c.id)
+  );
+
   return (
-    <main className="min-h-screen bg-background-light dark:bg-background-dark pb-24">
+    <main className="min-h-screen bg-coconut dark:bg-background-dark pb-24">
       {/* Header */}
       <motion.header
         initial={{ opacity: 0, y: -20 }}
@@ -119,7 +102,10 @@ export default function DashboardPage() {
       >
         <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
           <Logo size="sm" />
-          <button className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+          <button
+            onClick={() => router.push("/settings")}
+            className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center"
+          >
             <span className="text-lg">👤</span>
           </button>
         </div>
@@ -133,178 +119,184 @@ export default function DashboardPage() {
           className="mb-6"
         >
           <h1 className="text-2xl font-heading font-bold text-charcoal dark:text-white">
-            {greeting}
+            {greeting}{userData?.name ? `, ${userData.name}` : ""}!
           </h1>
           {userData && (
             <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
-              📍 {userData.city}, {userData.country} • 🇫🇯 {originName}
+              {userData.city}{userData.city && userData.country ? ", " : ""}{userData.country}
+              {originNames ? ` • 🇫🇯 ${originNames}` : ""}
             </p>
           )}
         </motion.div>
 
-        {/* Phrase of the Day Card */}
+        {/* Call Nani Button - Main CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.1 }}
-          className="mb-6"
+          className="mb-8"
         >
-          <Card variant="elevated" padding="none" className="overflow-hidden">
-            <div className="bg-gradient-to-r from-primary/10 to-secondary/10 p-5">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-semibold text-primary uppercase tracking-wide">
-                  Phrase of the Day
-                </span>
-                <span className="text-xs text-gray-500">Day 1</span>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="flex-1">
-                  <p className="text-2xl font-bold text-charcoal dark:text-white">
-                    &quot;Kaise ho?&quot;
-                  </p>
-                  <p className="text-gray-600 dark:text-gray-300 mt-1">
-                    How are you?
-                  </p>
-                </div>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handlePlayPhrase}
-                  disabled={isPlaying}
-                  className="w-14 h-14 rounded-full bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/30"
-                >
-                  {isPlaying ? (
-                    <svg className="w-6 h-6 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  ) : (
-                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15.414a5 5 0 001.414 1.414m0 0l-2.828 2.828m2.828-2.828l2.828 2.828M9 9h.01M15 9h.01M12 12h.01M12 15h.01M12 18h.01" />
-                    </svg>
-                  )}
-                </motion.button>
-              </div>
-            </div>
+          <Card variant="elevated" className="p-8 text-center bg-gradient-to-br from-white to-green-50 dark:from-gray-800 dark:to-gray-900">
+            <PhoneButton
+              onClick={handleCallNani}
+              label="Call Nani"
+              size="lg"
+            />
+            <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
+              Tap to start a conversation
+            </p>
           </Card>
         </motion.div>
 
-        {/* Mini Globe */}
+        {/* Progress Stats */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           className="mb-6"
         >
-          <Card variant="elevated" padding="none" className="overflow-hidden">
-            <div className="relative h-[200px]">
-              <DiasporaGlobe showStats={false} />
-              <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-gray-900 via-transparent to-transparent" />
-              <div className="absolute bottom-4 left-4 right-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      Fiji Indians worldwide
-                    </p>
-                    <p className="text-xl font-bold text-charcoal dark:text-white">
-                      {TOTAL_DIASPORA_COUNT.toLocaleString()}
-                    </p>
-                  </div>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => router.push("/onboarding")}
-                  >
-                    View Map
-                  </Button>
-                </div>
+          <h2 className="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-3">
+            Your Progress
+          </h2>
+          <Card variant="glass" className="p-4">
+            <div className="grid grid-cols-3 gap-4 text-center">
+              <div>
+                <p className="text-2xl font-bold text-primary">
+                  ☕ {progress.totalCalls}
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  conversations
+                </p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-secondary">
+                  💬 {progress.phrasesLearned.length}
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  phrases learned
+                </p>
+              </div>
+              <div>
+                <StreakBadge streak={progress.currentStreak} size="sm" showLabel={false} />
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  {progress.currentStreak} day streak
+                </p>
               </div>
             </div>
           </Card>
         </motion.div>
 
-        {/* Features Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-        >
-          <h2 className="text-lg font-heading font-semibold text-charcoal dark:text-white mb-4">
-            Learn Fiji Hindi
-          </h2>
-          <div className="space-y-3">
-            {features.map((feature, index) => (
-              <motion.div
-                key={feature.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 + index * 0.1 }}
-              >
-                <LessonCard
-                  icon={feature.icon}
-                  title={feature.title}
-                  subtitle={feature.subtitle}
-                  badge={feature.badge}
-                  badgeColor={feature.badgeColor}
-                  disabled={feature.disabled}
-                  onClick={() => !feature.disabled && router.push(feature.href)}
-                />
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
+        {/* Past Conversations */}
+        {completedConversations.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="mb-6"
+          >
+            <h2 className="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-3 flex items-center gap-2">
+              <span>📱</span> Past Conversations
+            </h2>
+            <Card variant="default" className="divide-y divide-gray-100 dark:divide-gray-800">
+              {completedConversations.slice(0, 5).map((conv) => (
+                <motion.button
+                  key={conv.id}
+                  onClick={() => router.push(`/call?id=${conv.id}`)}
+                  className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                      <svg className="w-4 h-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <div className="text-left">
+                      <p className="font-medium text-charcoal dark:text-white">
+                        {conv.title}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {conv.phrases.length} phrases
+                      </p>
+                    </div>
+                  </div>
+                  <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </motion.button>
+              ))}
+            </Card>
+          </motion.div>
+        )}
 
-        {/* Progress Section */}
+        {/* Available Conversations */}
+        {conversations.filter((c) => !progress.conversationsCompleted.includes(c.id)).length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="mb-6"
+          >
+            <h2 className="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-3">
+              Up Next
+            </h2>
+            <div className="space-y-2">
+              {conversations
+                .filter((c) => !progress.conversationsCompleted.includes(c.id))
+                .slice(0, 3)
+                .map((conv, index) => (
+                  <motion.button
+                    key={conv.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 + index * 0.1 }}
+                    onClick={() => router.push(`/call?id=${conv.id}`)}
+                    className="w-full"
+                  >
+                    <Card variant="default" className="p-4 hover:shadow-md transition-shadow">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                          <span className="text-xl">👵</span>
+                        </div>
+                        <div className="text-left flex-1">
+                          <p className="font-medium text-charcoal dark:text-white">
+                            {conv.title}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            {conv.description}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-xs text-gray-400">
+                            {conv.duration}
+                          </span>
+                        </div>
+                      </div>
+                    </Card>
+                  </motion.button>
+                ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Community Stats */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="mt-8"
+          transition={{ delay: 0.5 }}
         >
-          <Card variant="glass">
-            <div className="flex items-center gap-4 mb-3">
-              <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
-                <span className="text-xl">🏆</span>
-              </div>
-              <div>
-                <p className="font-semibold text-charcoal dark:text-white">Your Progress</p>
-                <p className="text-xs text-gray-500">Keep learning!</p>
-              </div>
-            </div>
-            <ProgressBar progress={familyCount > 0 ? Math.min(familyCount * 10, 100) : 5} color="accent" showLabel />
+          <Card variant="glass" className="p-4 text-center">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              <span className="text-primary font-bold">
+                {TOTAL_DIASPORA_COUNT.toLocaleString()}
+              </span>{" "}
+              Fiji Indians learning worldwide 🌍
+            </p>
           </Card>
         </motion.div>
       </div>
 
       {/* Bottom Navigation */}
-      <motion.nav
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-t border-gray-100 dark:border-gray-800 safe-area-bottom"
-      >
-        <div className="max-w-lg mx-auto px-4 py-3 flex justify-around">
-          <button className="flex flex-col items-center gap-1 text-primary">
-            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-            </svg>
-            <span className="text-xs font-medium">Home</span>
-          </button>
-          <button
-            onClick={() => router.push("/family-tree")}
-            className="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            <span className="text-xs font-medium">Family</span>
-          </button>
-          <button className="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span className="text-xs font-medium">Map</span>
-          </button>
-        </div>
-      </motion.nav>
+      <BottomNav />
     </main>
   );
 }
