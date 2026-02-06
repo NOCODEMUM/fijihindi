@@ -102,7 +102,8 @@ export type LessonModeId =
   | "aunty-coming"
   | "family-gathering"
   | "cooking-mum"
-  | "kava-night";
+  | "kava-night"
+  | "sos-flashcards";
 
 export interface LessonMode {
   id: LessonModeId;
@@ -111,7 +112,7 @@ export interface LessonMode {
   characterEmoji: string;
   description: string;
   vibe: string;
-  format: "phone-call" | "timed-urgency" | "multi-character" | "step-by-step" | "casual-hangout";
+  format: "phone-call" | "timed-urgency" | "multi-character" | "step-by-step" | "casual-hangout" | "flashcards";
   unlockWeek: number; // 1 = available from start
   minFrequency: number; // minimum percentage to show this mode (0-1)
 }
@@ -170,6 +171,17 @@ export const LESSON_MODES: Record<LessonModeId, LessonMode> = {
     vibe: "Reflective, story-based, cultural",
     format: "casual-hangout",
     unlockWeek: 3,
+    minFrequency: 0,
+  },
+  "sos-flashcards": {
+    id: "sos-flashcards",
+    name: "SOS Flashcards",
+    character: "Quick Reference",
+    characterEmoji: "🆘",
+    description: "Emergency phrases when you need them fast",
+    vibe: "Quick, practical, swipeable",
+    format: "flashcards",
+    unlockWeek: 1,
     minFrequency: 0,
   },
 } as const;

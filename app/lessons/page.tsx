@@ -47,6 +47,14 @@ const KavaNightInterface = dynamic(
   }
 );
 
+const SOSFlashcardsInterface = dynamic(
+  () => import("./components/SOSFlashcardsInterface"),
+  {
+    loading: () => <LoadingScreen />,
+    ssr: false,
+  }
+);
+
 function LoadingScreen() {
   return (
     <div className="min-h-screen flex items-center justify-center">
@@ -162,6 +170,16 @@ function LessonsPageContent() {
         />
       );
 
+    case "sos-flashcards":
+      return (
+        <SOSFlashcardsInterface
+          onComplete={(cardsReviewed) => handleLessonComplete({
+            score: cardsReviewed,
+          })}
+          onExit={() => router.push("/dashboard")}
+        />
+      );
+
     default:
       return <ModeSelector onSelect={setSelectedMode} />;
   }
@@ -224,6 +242,7 @@ function ModeSelector({ onSelect }: { onSelect: (mode: LessonModeId) => void }) 
                     mode.format === "timed-urgency" ? "bg-orange-100 text-orange-700" :
                     mode.format === "multi-character" ? "bg-blue-100 text-blue-700" :
                     mode.format === "step-by-step" ? "bg-purple-100 text-purple-700" :
+                    mode.format === "flashcards" ? "bg-red-100 text-red-700" :
                     "bg-gray-100 text-gray-700"}
                 `}>
                   {mode.format.replace("-", " ")}
