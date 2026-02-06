@@ -61,6 +61,7 @@ export default function AuntyComingInterface({
   }, [phase, exchanges]);
 
   // Countdown timer
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (phase !== "playing") return;
 

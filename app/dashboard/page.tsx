@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Card from "@/components/ui/Card";
 import Logo from "@/components/ui/Logo";
-import PhoneButton from "@/components/ui/PhoneButton";
 import StreakBadge from "@/components/ui/StreakBadge";
 import BottomNav from "@/components/ui/BottomNav";
 import { FIJI_REGIONS, TOTAL_DIASPORA_COUNT, getAvailableModes, LessonMode } from "@/lib/constants";

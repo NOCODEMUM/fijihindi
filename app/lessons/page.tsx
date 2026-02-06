@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
@@ -23,17 +23,28 @@ const AuntyComingInterface = dynamic(
   }
 );
 
-// Placeholder for other modes (will be built later)
-const ComingSoonMode = ({ modeName }: { modeName: string }) => (
-  <div className="min-h-screen flex flex-col items-center justify-center px-4">
-    <span className="text-6xl mb-4">🚧</span>
-    <h1 className="text-2xl font-bold text-charcoal dark:text-white mb-2">
-      {modeName}
-    </h1>
-    <p className="text-gray-500 dark:text-gray-400 text-center">
-      Coming soon! This mode is being built.
-    </p>
-  </div>
+const FamilyGatheringInterface = dynamic(
+  () => import("./components/FamilyGatheringInterface"),
+  {
+    loading: () => <LoadingScreen />,
+    ssr: false,
+  }
+);
+
+const CookingMumInterface = dynamic(
+  () => import("./components/CookingMumInterface"),
+  {
+    loading: () => <LoadingScreen />,
+    ssr: false,
+  }
+);
+
+const KavaNightInterface = dynamic(
+  () => import("./components/KavaNightInterface"),
+  {
+    loading: () => <LoadingScreen />,
+    ssr: false,
+  }
 );
 
 function LoadingScreen() {
@@ -44,10 +55,13 @@ function LoadingScreen() {
   );
 }
 
-// Import aunty scenario data
+// Import scenario data for all modes
 import { getRandomAuntyScenario } from "@/data/conversations/aunty-coming";
+import { getRandomGatheringScenario } from "@/data/conversations/family-gathering";
+import { getRandomRecipe } from "@/data/conversations/cooking-mum";
+import { getRandomKavaStory } from "@/data/conversations/kava-night";
 
-export default function LessonsPage() {
+function LessonsPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const modeParam = searchParams.get("mode") as LessonModeId | null;
@@ -70,6 +84,7 @@ export default function LessonsPage() {
     setIsLoading(false);
   }, [modeParam]);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleLessonComplete = (result: {
     survived?: boolean;
     score?: number;
@@ -86,6 +101,7 @@ export default function LessonsPage() {
       setFirstLessonDate();
     }
 
+    // TODO: Store result for lesson summary
     // Navigate to summary or dashboard
     router.push("/dashboard");
   };
@@ -111,17 +127,53 @@ export default function LessonsPage() {
       );
 
     case "family-gathering":
-      return <ComingSoonMode modeName="Family Gathering" />;
+      const gatheringScenario = getRandomGatheringScenario();
+      return (
+        <FamilyGatheringInterface
+          scenario={gatheringScenario}
+          onComplete={(result) => handleLessonComplete({
+            score: result.membersGreeted,
+            responsesGiven: result.phrasesUsed,
+          })}
+        />
+      );
 
     case "cooking-mum":
-      return <ComingSoonMode modeName="Cooking with Mum" />;
+      const recipe = getRandomRecipe();
+      return (
+        <CookingMumInterface
+          recipe={recipe}
+          onComplete={(result) => handleLessonComplete({
+            score: result.stepsCompleted,
+            responsesGiven: result.vocabularyLearned,
+          })}
+        />
+      );
 
     case "kava-night":
-      return <ComingSoonMode modeName="Kava Night with Dad" />;
+      const kavaStory = getRandomKavaStory();
+      return (
+        <KavaNightInterface
+          story={kavaStory}
+          onComplete={(result) => handleLessonComplete({
+            score: result.segmentsHeard,
+            responsesGiven: [...result.proverbsLearned, ...result.responsesGiven],
+          })}
+        />
+      );
 
     default:
       return <ModeSelector onSelect={setSelectedMode} />;
   }
+}
+
+// Wrap in Suspense for useSearchParams
+export default function LessonsPage() {
+  return (
+    <Suspense fallback={<LoadingScreen />}>
+      <LessonsPageContent />
+    </Suspense>
+  );
 }
 
 // Mode selector component (shown when no mode selected)

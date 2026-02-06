@@ -52,7 +52,6 @@ export default function FamilyTreePage() {
   const [showSavePrompt, setShowSavePrompt] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [playingTerm, setPlayingTerm] = useState<string | null>(null);
-  const [userFaith, setUserFaith] = useState<Faith>("hindu");
   const [relationshipTerms, setRelationshipTerms] = useState<{ fijiHindi: string; english: string; emoji: string }[]>([]);
 
   // Initialize with "self" node and load user faith
@@ -72,7 +71,6 @@ export default function FamilyTreePage() {
 
     // Load user's faith and generate terms
     const faith = getUserFaith();
-    setUserFaith(faith);
     setRelationshipTerms(getRelationshipTerms(faith));
   }, []);
 
