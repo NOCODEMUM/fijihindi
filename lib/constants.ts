@@ -93,6 +93,99 @@ export const CONVERSATION_DIFFICULTIES = {
   advanced: { label: "Advanced", color: "red" },
 } as const;
 
+// ============================================
+// LESSON MODES - 5 distinct learning formats
+// ============================================
+
+export type LessonModeId =
+  | "nani-calling"
+  | "aunty-coming"
+  | "family-gathering"
+  | "cooking-mum"
+  | "kava-night";
+
+export interface LessonMode {
+  id: LessonModeId;
+  name: string;
+  character: string;
+  characterEmoji: string;
+  description: string;
+  vibe: string;
+  format: "phone-call" | "timed-urgency" | "multi-character" | "step-by-step" | "casual-hangout";
+  unlockWeek: number; // 1 = available from start
+  minFrequency: number; // minimum percentage to show this mode (0-1)
+}
+
+export const LESSON_MODES: Record<LessonModeId, LessonMode> = {
+  "nani-calling": {
+    id: "nani-calling",
+    name: "Nani's Calling",
+    character: "Nani",
+    characterEmoji: "👵",
+    description: "Warm phone calls with your grandmother",
+    vibe: "Patient, loving, lots of repetition",
+    format: "phone-call",
+    unlockWeek: 1,
+    minFrequency: 0.3, // Always at least 30% Nani
+  },
+  "aunty-coming": {
+    id: "aunty-coming",
+    name: "Quick! Aunty's Coming",
+    character: "Aunty",
+    characterEmoji: "👩",
+    description: "Rapid-fire greetings when aunty arrives",
+    vibe: "Playful panic, time pressure",
+    format: "timed-urgency",
+    unlockWeek: 1,
+    minFrequency: 0,
+  },
+  "family-gathering": {
+    id: "family-gathering",
+    name: "Family Gathering",
+    character: "Multiple",
+    characterEmoji: "👨‍👩‍👧‍👦",
+    description: "Navigate conversations at a family party",
+    vibe: "Festive, chaotic, social",
+    format: "multi-character",
+    unlockWeek: 2,
+    minFrequency: 0,
+  },
+  "cooking-mum": {
+    id: "cooking-mum",
+    name: "Cooking with Mum",
+    character: "Mum",
+    characterEmoji: "👩‍🍳",
+    description: "Learn Fiji recipes and kitchen vocabulary",
+    vibe: "Cozy, instructional, sensory",
+    format: "step-by-step",
+    unlockWeek: 2,
+    minFrequency: 0,
+  },
+  "kava-night": {
+    id: "kava-night",
+    name: "Kava Night with Dad",
+    character: "Dad",
+    characterEmoji: "👨",
+    description: "Relaxed stories and life advice over kava",
+    vibe: "Reflective, story-based, cultural",
+    format: "casual-hangout",
+    unlockWeek: 3,
+    minFrequency: 0,
+  },
+} as const;
+
+// Get modes available for a given week
+export function getAvailableModes(weekNumber: number): LessonMode[] {
+  return Object.values(LESSON_MODES).filter(
+    (mode) => mode.unlockWeek <= weekNumber
+  );
+}
+
+// Get mode by ID
+export function getModeById(id: LessonModeId): LessonMode {
+  return LESSON_MODES[id];
+}
+
 // App theme colors
 export const COLORS = {
   primary: "#FF7722",
