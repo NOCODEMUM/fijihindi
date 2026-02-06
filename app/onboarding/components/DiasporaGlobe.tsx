@@ -378,7 +378,7 @@ export default function DiasporaGlobe({
               position="top-left"
               delay={0.5}
             />
-            <TopLocations delay={0.8} />
+            <TopLocations delay={0.7} />
           </>
         )}
       </AnimatePresence>

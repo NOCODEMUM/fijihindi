@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import Button from "@/components/ui/Button";
-import { TOTAL_DIASPORA_COUNT } from "@/lib/constants";
 
 const DiasporaGlobe = dynamic(() => import("./DiasporaGlobe"), {
   ssr: false,
@@ -123,13 +122,7 @@ export default function DiasporaStep({ onNext, onBack }: DiasporaStepProps) {
         transition={{ delay: 1 }}
         className="px-4 pb-4 pt-2 flex-shrink-0"
       >
-        {/* Join text */}
-        <p className="text-center text-sm mb-0.5">
-          <span className="text-gray-600 dark:text-gray-400">Join </span>
-          <span className="text-primary font-bold">{(TOTAL_DIASPORA_COUNT + 1).toLocaleString()}</span>
-          <span className="text-gray-600 dark:text-gray-400"> Fiji Indians worldwide</span>
-        </p>
-        <p className="text-center text-xs text-gray-500 dark:text-gray-400 mb-3">
+        <p className="text-center text-sm text-gray-500 dark:text-gray-400 mb-3">
           Explore your family tree and learn Fiji Hindi
         </p>
 
