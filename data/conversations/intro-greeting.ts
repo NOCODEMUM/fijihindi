@@ -1,5 +1,7 @@
 // Conversation data for Nani phone calls - AUTHENTIC FIJI HINDI
 
+import { Faith, RELATIONSHIPS, getTermForFaith } from "@/data/relationships";
+
 export interface DialogueExchange {
   id: string;
   speaker: "nani" | "user";
@@ -388,4 +390,35 @@ export function getNextConversation(currentId: string): Conversation | undefined
 // Get all conversations sorted by order
 export function getAllConversations(): Conversation[] {
   return [...CONVERSATIONS].sort((a, b) => a.orderIndex - b.orderIndex);
+}
+
+// Helper function to get the term for a relationship ID and faith
+function getRelationshipTermForFaith(relationshipId: string, faith: Faith): string {
+  const relationship = RELATIONSHIPS[relationshipId];
+  if (!relationship) return relationshipId;
+  return getTermForFaith(relationship, faith);
+}
+
+// Replace "Nani" with the correct faith-based term in a string
+function replaceNaniTerm(text: string, naniTerm: string): string {
+  // Replace "Nani" as a standalone word (case-sensitive to preserve other uses)
+  return text.replace(/\bNani\b/g, naniTerm);
+}
+
+// Get conversations with faith-based relationship terms
+export function getConversationsForFaith(faith: Faith): Conversation[] {
+  const naniTerm = getRelationshipTermForFaith("nani", faith);
+
+  return CONVERSATIONS.map((conversation) => ({
+    ...conversation,
+    dialogue: conversation.dialogue.map((exchange) => ({
+      ...exchange,
+      fijiHindi: replaceNaniTerm(exchange.fijiHindi, naniTerm),
+      english: replaceNaniTerm(exchange.english, naniTerm),
+      options: exchange.options?.map((option) => ({
+        fijiHindi: replaceNaniTerm(option.fijiHindi, naniTerm),
+        english: replaceNaniTerm(option.english, naniTerm),
+      })),
+    })),
+  }));
 }

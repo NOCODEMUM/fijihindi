@@ -2,6 +2,7 @@
 // Quick reference phrases when you need them fast
 
 import { Faith, RELATIONSHIPS, getTermForFaith, getAllTermsForFaith } from "@/data/relationships";
+import { GREETINGS, getAllGreetingTerms } from "@/data/greetings";
 
 export interface Flashcard {
   id: string;
@@ -29,45 +30,9 @@ export const FLASHCARD_CATEGORIES: FlashcardCategory[] = [
     id: "greetings",
     name: "Greetings",
     emoji: "👋",
-    description: "Hello, goodbye, and basic greetings",
-    cards: [
-      {
-        id: "g1",
-        fijiHindi: "Namaste",
-        english: "Hello / Greetings",
-        pronunciation: "nuh-MUS-tay",
-      },
-      {
-        id: "g2",
-        fijiHindi: "Kaise hai?",
-        english: "How are you?",
-        pronunciation: "KAI-say hai",
-      },
-      {
-        id: "g3",
-        fijiHindi: "Ham tik hai",
-        english: "I'm fine",
-        pronunciation: "hum TEEK hai",
-      },
-      {
-        id: "g4",
-        fijiHindi: "Fir melega",
-        english: "See you later",
-        pronunciation: "fir MEH-lay-ga",
-      },
-      {
-        id: "g5",
-        fijiHindi: "Bahut din ho gaya",
-        english: "It's been so long",
-        pronunciation: "ba-HOOT din ho GUY-ya",
-      },
-      {
-        id: "g6",
-        fijiHindi: "Aao, andar aao",
-        english: "Come, come inside",
-        pronunciation: "AA-oh, UN-dar AA-oh",
-      },
-    ],
+    description: "Hello, goodbye, and basic greetings (based on your faith)",
+    isDynamic: true,
+    cards: [], // Will be populated dynamically based on user's faith
   },
   {
     id: "family",
@@ -428,6 +393,16 @@ const FAMILY_FLASHCARD_IDS = [
   "bhabhi", "jija",
 ];
 
+// Greeting IDs to include in flashcards (most common)
+const GREETING_FLASHCARD_IDS = [
+  "hello", "goodMorning", "goodEvening", "howAreYou",
+  "goodbye", "seeYouLater", "takecare",
+  "thankYou", "youreWelcome",
+  "sorry", "excuse",
+  "blessYou", "touchFeet",
+  "congratulations", "happyBirthday",
+];
+
 // Generate family flashcards based on user's faith
 export function getFamilyFlashcards(faith: Faith): Flashcard[] {
   const cards: Flashcard[] = [];
@@ -462,6 +437,39 @@ export function getFamilyFlashcards(faith: Faith): Flashcard[] {
   return cards;
 }
 
+// Generate greetings flashcards based on user's faith
+export function getGreetingsFlashcards(faith: Faith): Flashcard[] {
+  const cards: Flashcard[] = [];
+
+  GREETING_FLASHCARD_IDS.forEach((id, index) => {
+    const greeting = GREETINGS[id];
+    if (!greeting) return;
+
+    const terms = getAllGreetingTerms(greeting, faith);
+
+    const card: Flashcard = {
+      id: `greeting-${index + 1}`,
+      fijiHindi: terms.primary,
+      english: greeting.english,
+    };
+
+    if (terms.alternate) {
+      card.alternate = terms.alternate;
+    }
+
+    if (terms.response) {
+      card.example = {
+        fijiHindi: terms.response,
+        english: `Response: ${terms.response}`,
+      };
+    }
+
+    cards.push(card);
+  });
+
+  return cards;
+}
+
 // Get category by ID (with faith-based dynamic cards)
 export function getFlashcardCategory(id: string, faith: Faith = "hindu"): FlashcardCategory | undefined {
   const category = FLASHCARD_CATEGORIES.find((c) => c.id === id);
@@ -475,6 +483,14 @@ export function getFlashcardCategory(id: string, faith: Faith = "hindu"): Flashc
     };
   }
 
+  // If it's the greetings category, populate with faith-based terms
+  if (category.isDynamic && category.id === "greetings") {
+    return {
+      ...category,
+      cards: getGreetingsFlashcards(faith),
+    };
+  }
+
   return category;
 }
 
@@ -485,6 +501,12 @@ export function getAllFlashcardCategories(faith: Faith = "hindu"): FlashcardCate
       return {
         ...category,
         cards: getFamilyFlashcards(faith),
+      };
+    }
+    if (category.isDynamic && category.id === "greetings") {
+      return {
+        ...category,
+        cards: getGreetingsFlashcards(faith),
       };
     }
     return category;

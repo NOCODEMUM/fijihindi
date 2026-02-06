@@ -305,3 +305,94 @@ export async function searchRelationshipsInDB(query: string): Promise<Relationsh
   if (error) throw error;
   return (data || []) as RelationshipDB[];
 }
+
+// =============================================================================
+// GREETINGS MASTER LIST
+// =============================================================================
+
+export interface GreetingTermDB {
+  primary: string;
+  alternate?: string | null;
+  response?: string | null;
+}
+
+export interface GreetingDB {
+  id: string;
+  english: string;
+  description: string | null;
+  category: string;
+  terms_hindu: GreetingTermDB;
+  terms_muslim: GreetingTermDB;
+  terms_christian: GreetingTermDB;
+  terms_sikh: GreetingTermDB;
+  terms_other: GreetingTermDB;
+  created_at?: string;
+  updated_at?: string;
+}
+
+// Get all greetings from master list
+export async function getAllGreetingsFromDB(): Promise<GreetingDB[]> {
+  const { data, error } = await supabase
+    .from("greetings_master")
+    .select("*")
+    .order("id");
+
+  if (error) throw error;
+  return (data || []) as GreetingDB[];
+}
+
+// Get a single greeting by ID
+export async function getGreetingFromDB(id: string): Promise<GreetingDB | null> {
+  const { data, error } = await supabase
+    .from("greetings_master")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    if (error.code === "PGRST116") return null; // Not found
+    throw error;
+  }
+  return data as GreetingDB;
+}
+
+// Upsert a greeting (insert or update)
+export async function upsertGreeting(greeting: GreetingDB): Promise<GreetingDB> {
+  const { data, error } = await supabase
+    .from("greetings_master")
+    .upsert(greeting, { onConflict: "id" })
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data as GreetingDB;
+}
+
+// Bulk upsert greetings (sync from local data)
+export async function syncGreetingsToSupabase(greetings: GreetingDB[]): Promise<void> {
+  const { error } = await supabase
+    .from("greetings_master")
+    .upsert(greetings, { onConflict: "id" });
+
+  if (error) throw error;
+}
+
+// Delete a greeting
+export async function deleteGreetingFromDB(id: string): Promise<void> {
+  const { error } = await supabase
+    .from("greetings_master")
+    .delete()
+    .eq("id", id);
+
+  if (error) throw error;
+}
+
+// Get greeting count
+export async function getGreetingCount(): Promise<number> {
+  const { count, error } = await supabase
+    .from("greetings_master")
+    .select("*", { count: "exact", head: true });
+
+  if (error) throw error;
+  return count || 0;
+}
