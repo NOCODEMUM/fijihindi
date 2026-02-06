@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
+import { speakFijiHindi } from "@/lib/audio";
 
 interface ResponseOption {
   fijiHindi: string;
@@ -18,6 +20,19 @@ export default function ResponseOptions({
   onSelect,
   disabled = false
 }: ResponseOptionsProps) {
+  const [playingIndex, setPlayingIndex] = useState<number | null>(null);
+
+  const handlePlayAudio = (e: React.MouseEvent, text: string, index: number) => {
+    e.stopPropagation(); // Don't trigger selection
+    if (playingIndex === index) return; // Already playing this one
+
+    setPlayingIndex(index);
+    speakFijiHindi(text, {
+      onEnd: () => setPlayingIndex(null),
+      onError: () => setPlayingIndex(null),
+    });
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -45,12 +60,33 @@ export default function ResponseOptions({
             }
           `}
         >
-          <p className="font-medium text-charcoal dark:text-white text-lg">
-            {option.fijiHindi}
-          </p>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            {option.english}
-          </p>
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex-1">
+              <p className="font-medium text-charcoal dark:text-white text-lg">
+                {option.fijiHindi}
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                {option.english}
+              </p>
+            </div>
+            {/* Audio preview button */}
+            <button
+              onClick={(e) => handlePlayAudio(e, option.fijiHindi, index)}
+              disabled={disabled}
+              className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${
+                playingIndex === index
+                  ? "bg-primary text-white"
+                  : "bg-gray-200 dark:bg-gray-700 text-gray-500 hover:bg-gray-300 dark:hover:bg-gray-600"
+              }`}
+              aria-label="Preview pronunciation"
+            >
+              {playingIndex === index ? (
+                <span className="animate-pulse">🔊</span>
+              ) : (
+                <span>🔈</span>
+              )}
+            </button>
+          </div>
         </motion.button>
       ))}
     </motion.div>
