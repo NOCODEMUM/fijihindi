@@ -39,14 +39,19 @@ export default function Home() {
         </motion.div>
 
         {/* Tagline */}
-        <motion.p
+        <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-lg md:text-xl text-charcoal/70 font-merriweather italic mb-8"
+          className="mb-8 text-center"
         >
-          Hamaar Bhasha, Hamaar Kahani
-        </motion.p>
+          <p className="text-lg md:text-xl text-charcoal/70 font-merriweather italic">
+            Hamaar Bhasha, Hamaar Kahani
+          </p>
+          <p className="text-sm text-charcoal/50 mt-1">
+            Our Language, Our Story
+          </p>
+        </motion.div>
 
         {/* Subtitle */}
         <motion.p

@@ -1,131 +1,152 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import Button from "@/components/ui/Button";
 
 interface HookStepProps {
   onNext: () => void;
 }
 
+interface ChatMessage {
+  id: number;
+  type: "aunty" | "user";
+  text: string;
+  delay: number;
+}
+
+const CHAT_MESSAGES: ChatMessage[] = [
+  {
+    id: 1,
+    type: "aunty",
+    text: "Arre beta! You want to learn Fiji Hindi?",
+    delay: 0.3,
+  },
+  {
+    id: 2,
+    type: "aunty",
+    text: "Come, sit. I'll teach you how we talk back home. No pressure - just like chatting over chai. ☕",
+    delay: 1.2,
+  },
+  {
+    id: 3,
+    type: "user",
+    text: "Thik hai, Aunty! 🙏",
+    delay: 2.4,
+  },
+  {
+    id: 4,
+    type: "aunty",
+    text: "First, tell me where you're living now. We'll add you to the map of Fiji Indians around the world! 🌏",
+    delay: 3.2,
+  },
+];
+
 export default function HookStep({ onNext }: HookStepProps) {
+  const [visibleMessages, setVisibleMessages] = useState<number[]>([]);
+  const [showButton, setShowButton] = useState(false);
+
+  useEffect(() => {
+    // Show messages progressively
+    CHAT_MESSAGES.forEach((msg) => {
+      setTimeout(() => {
+        setVisibleMessages((prev) => [...prev, msg.id]);
+      }, msg.delay * 1000);
+    });
+
+    // Show button after last message
+    setTimeout(() => {
+      setShowButton(true);
+    }, 4200);
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="flex flex-col items-center justify-center min-h-[80vh] px-6 text-center"
+      className="flex flex-col min-h-[85vh] px-4"
     >
-      {/* Phone icon with animation */}
+      {/* Logo */}
       <motion.div
-        initial={{ scale: 0, rotate: -180 }}
-        animate={{ scale: 1, rotate: 0 }}
-        transition={{
-          type: "spring",
-          stiffness: 200,
-          damping: 15,
-          delay: 0.2
-        }}
-        className="relative mb-8"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex justify-center pt-8 pb-6"
       >
-        {/* Ringing effect */}
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.5, 0, 0.5],
-          }}
-          transition={{
-            duration: 1.5,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="absolute inset-0 rounded-full bg-primary/30"
-          style={{ transform: "scale(1.5)" }}
+        <Image
+          src="/logo.webp"
+          alt="FijiHindi"
+          width={180}
+          height={60}
+          className="object-contain"
+          priority
         />
-        <motion.div
-          animate={{
-            scale: [1, 1.4, 1],
-            opacity: [0.3, 0, 0.3],
-          }}
-          transition={{
-            duration: 1.5,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 0.2,
-          }}
-          className="absolute inset-0 rounded-full bg-primary/20"
-          style={{ transform: "scale(2)" }}
-        />
-        <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-xl shadow-primary/30">
-          <motion.span
-            className="text-6xl"
-            animate={{ rotate: [0, -10, 10, -10, 10, 0] }}
-            transition={{
-              duration: 0.5,
-              repeat: Infinity,
-              repeatDelay: 1.5
-            }}
-          >
-            📞
-          </motion.span>
-        </div>
       </motion.div>
 
-      {/* Heading */}
-      <motion.h1
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-        className="text-3xl font-heading font-bold text-charcoal dark:text-white mb-4"
-      >
-        Your Nani is calling...
-      </motion.h1>
+      {/* Chat Messages */}
+      <div className="flex-1 flex flex-col gap-4 pb-4">
+        <AnimatePresence>
+          {CHAT_MESSAGES.map((msg) => (
+            visibleMessages.includes(msg.id) && (
+              <motion.div
+                key={msg.id}
+                initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.3 }}
+                className={`flex items-start gap-3 ${
+                  msg.type === "user" ? "flex-row-reverse" : ""
+                }`}
+              >
+                {/* Avatar */}
+                {msg.type === "aunty" && (
+                  <div className="w-10 h-10 rounded-full bg-peach/30 flex items-center justify-center flex-shrink-0">
+                    <span className="text-xl">👵</span>
+                  </div>
+                )}
 
-      {/* Subheading */}
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className="text-lg text-gray-600 dark:text-gray-300 mb-2 max-w-sm"
-      >
-        She wants to teach you the language of your ancestors.
-      </motion.p>
-
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
-        className="text-base text-gray-500 dark:text-gray-400 mb-12 max-w-sm"
-      >
-        Learn Fiji Hindi through conversations with your grandmother.
-      </motion.p>
+                {/* Message Bubble */}
+                <div
+                  className={`max-w-[80%] px-4 py-3 rounded-2xl ${
+                    msg.type === "aunty"
+                      ? "bg-white dark:bg-gray-800 rounded-tl-sm shadow-sm border border-gray-100 dark:border-gray-700"
+                      : "bg-primary text-white rounded-tr-sm"
+                  }`}
+                >
+                  <p className={`text-base leading-relaxed ${
+                    msg.type === "aunty" ? "text-charcoal dark:text-white" : "text-white"
+                  }`}>
+                    {msg.text}
+                  </p>
+                </div>
+              </motion.div>
+            )
+          ))}
+        </AnimatePresence>
+      </div>
 
       {/* CTA Button */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.7 }}
-        className="w-full max-w-xs"
-      >
-        <Button
-          onClick={onNext}
-          size="lg"
-          fullWidth
-          className="bg-green-500 hover:bg-green-600 shadow-lg shadow-green-500/30"
-        >
-          <span className="mr-2">📱</span>
-          Answer the Call
-        </Button>
-      </motion.div>
-
-      {/* Footer text */}
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.9 }}
-        className="mt-8 text-sm text-gray-400"
-      >
-        Join 12,000+ people reconnecting with their roots
-      </motion.p>
+      <AnimatePresence>
+        {showButton && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="pb-4"
+          >
+            <Button
+              onClick={onNext}
+              size="lg"
+              fullWidth
+              className="py-4 text-lg rounded-2xl"
+            >
+              Let&apos;s Go!
+            </Button>
+            <p className="text-center text-sm text-gray-400 mt-3">
+              No signup needed • Takes 2 minutes
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

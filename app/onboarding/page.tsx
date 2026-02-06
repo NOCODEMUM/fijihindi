@@ -6,9 +6,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import HookStep from "./components/HookStep";
 import DiasporaStep from "./components/DiasporaStep";
 import OriginStep from "./components/OriginStep";
+import FaithStep from "./components/FaithStep";
 import FirstCallStep from "./components/FirstCallStep";
 
-type OnboardingStep = "hook" | "diaspora" | "origin" | "firstCall";
+type OnboardingStep = "hook" | "diaspora" | "origin" | "faith" | "firstCall";
 
 interface UserData {
   name: string;
@@ -17,6 +18,7 @@ interface UserData {
   lat: number;
   lng: number;
   origins: string[];
+  faith: string;
 }
 
 export default function OnboardingPage() {
@@ -29,6 +31,7 @@ export default function OnboardingPage() {
     lat: 0,
     lng: 0,
     origins: [],
+    faith: "",
   });
 
   const handleDiasporaSubmit = useCallback(
@@ -41,6 +44,11 @@ export default function OnboardingPage() {
 
   const handleOriginSubmit = useCallback((origins: string[]) => {
     setUserData((prev) => ({ ...prev, origins }));
+    setStep("faith");
+  }, []);
+
+  const handleFaithSubmit = useCallback((faith: string) => {
+    setUserData((prev) => ({ ...prev, faith }));
     setStep("firstCall");
   }, []);
 
@@ -55,7 +63,7 @@ export default function OnboardingPage() {
         lat: userData.lat,
         lng: userData.lng,
         origins: userData.origins,
-        faith: "hindu", // Default, can be changed in settings
+        faith: userData.faith || "hindu",
       }));
 
       // Save progress
@@ -77,10 +85,11 @@ export default function OnboardingPage() {
     hook: 0,
     diaspora: 1,
     origin: 2,
-    firstCall: 3,
+    faith: 3,
+    firstCall: 4,
   };
 
-  const progressSteps = ["diaspora", "origin"];
+  const progressSteps = ["diaspora", "origin", "faith"];
 
   return (
     <main className="min-h-screen bg-background-light dark:bg-background-dark">
@@ -151,6 +160,21 @@ export default function OnboardingPage() {
                 onNext={handleOriginSubmit}
                 onBack={() => setStep("diaspora")}
                 initialOrigins={userData.origins}
+              />
+            </motion.div>
+          )}
+
+          {step === "faith" && (
+            <motion.div
+              key="faith"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <FaithStep
+                onNext={handleFaithSubmit}
+                onBack={() => setStep("origin")}
+                initialFaith={userData.faith}
               />
             </motion.div>
           )}
