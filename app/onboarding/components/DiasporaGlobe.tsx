@@ -193,7 +193,7 @@ function RotatingGlobe() {
   });
 
   return (
-    <group ref={groupRef}>
+    <group ref={groupRef} rotation={[0, Math.PI, 0]}>
       <AtmosphereGlow radius={2} />
       <EarthGlobe radius={2} />
       <LocationPins radius={2} />
