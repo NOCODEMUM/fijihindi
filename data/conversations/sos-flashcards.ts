@@ -1,6 +1,8 @@
 // SOS Flashcards - AUTHENTIC FIJI HINDI
 // Quick reference phrases when you need them fast
 
+import { Faith, RELATIONSHIPS, getTermForFaith, getAllTermsForFaith } from "@/data/relationships";
+
 export interface Flashcard {
   id: string;
   fijiHindi: string;
@@ -10,6 +12,7 @@ export interface Flashcard {
     fijiHindi: string;
     english: string;
   };
+  alternate?: string;
 }
 
 export interface FlashcardCategory {
@@ -18,6 +21,7 @@ export interface FlashcardCategory {
   emoji: string;
   description: string;
   cards: Flashcard[];
+  isDynamic?: boolean; // If true, cards are generated based on faith
 }
 
 export const FLASHCARD_CATEGORIES: FlashcardCategory[] = [
@@ -69,69 +73,9 @@ export const FLASHCARD_CATEGORIES: FlashcardCategory[] = [
     id: "family",
     name: "Family Terms",
     emoji: "👨‍👩‍👧‍👦",
-    description: "Parents, grandparents, relatives",
-    cards: [
-      {
-        id: "f1",
-        fijiHindi: "Maa",
-        english: "Mother",
-        pronunciation: "maa",
-      },
-      {
-        id: "f2",
-        fijiHindi: "Baap",
-        english: "Father",
-        pronunciation: "baap",
-      },
-      {
-        id: "f3",
-        fijiHindi: "Nani",
-        english: "Grandmother (maternal)",
-        pronunciation: "NAA-nee",
-      },
-      {
-        id: "f4",
-        fijiHindi: "Nana",
-        english: "Grandfather (maternal)",
-        pronunciation: "NAA-naa",
-      },
-      {
-        id: "f5",
-        fijiHindi: "Dadi",
-        english: "Grandmother (paternal)",
-        pronunciation: "DAA-dee",
-      },
-      {
-        id: "f6",
-        fijiHindi: "Dada",
-        english: "Grandfather (paternal)",
-        pronunciation: "DAA-daa",
-      },
-      {
-        id: "f7",
-        fijiHindi: "Chacha",
-        english: "Uncle (father's brother)",
-        pronunciation: "CHA-cha",
-      },
-      {
-        id: "f8",
-        fijiHindi: "Chachi",
-        english: "Aunt (chacha's wife)",
-        pronunciation: "CHA-chee",
-      },
-      {
-        id: "f9",
-        fijiHindi: "Bhaiya",
-        english: "Brother",
-        pronunciation: "BYE-ya",
-      },
-      {
-        id: "f10",
-        fijiHindi: "Bhaini",
-        english: "Sister",
-        pronunciation: "BYE-nee",
-      },
-    ],
+    description: "Parents, grandparents, relatives (based on your faith)",
+    isDynamic: true,
+    cards: [], // Will be populated dynamically based on user's faith
   },
   {
     id: "polite",
@@ -471,19 +415,90 @@ export const FLASHCARD_CATEGORIES: FlashcardCategory[] = [
   },
 ];
 
-// Get category by ID
-export function getFlashcardCategory(id: string): FlashcardCategory | undefined {
-  return FLASHCARD_CATEGORIES.find((c) => c.id === id);
+// Family relationship IDs to include in flashcards (most common)
+const FAMILY_FLASHCARD_IDS = [
+  "mother", "father",
+  "nani", "nana", "dadi", "dada",
+  "brother", "sister",
+  "chacha", "chachi", "mama", "mami",
+  "bua", "mausi",
+  "son", "daughter",
+  "husband", "wife",
+  "sasur", "saas",
+  "bhabhi", "jija",
+];
+
+// Generate family flashcards based on user's faith
+export function getFamilyFlashcards(faith: Faith): Flashcard[] {
+  const cards: Flashcard[] = [];
+
+  FAMILY_FLASHCARD_IDS.forEach((id, index) => {
+    const rel = RELATIONSHIPS[id];
+    if (!rel) return;
+
+    const terms = getAllTermsForFaith(rel, faith);
+    const primaryTerm = getTermForFaith(rel, faith);
+
+    const card: Flashcard = {
+      id: `family-${index + 1}`,
+      fijiHindi: primaryTerm,
+      english: rel.english,
+    };
+
+    if (terms.alternate || terms.informal) {
+      card.alternate = terms.alternate || terms.informal;
+    }
+
+    if (terms.formal) {
+      card.example = {
+        fijiHindi: `${terms.formal} aaya hai`,
+        english: `${rel.english} has arrived`,
+      };
+    }
+
+    cards.push(card);
+  });
+
+  return cards;
 }
 
-// Get all cards across all categories
-export function getAllFlashcards(): Flashcard[] {
-  return FLASHCARD_CATEGORIES.flatMap((c) => c.cards);
+// Get category by ID (with faith-based dynamic cards)
+export function getFlashcardCategory(id: string, faith: Faith = "hindu"): FlashcardCategory | undefined {
+  const category = FLASHCARD_CATEGORIES.find((c) => c.id === id);
+  if (!category) return undefined;
+
+  // If it's the family category, populate with faith-based terms
+  if (category.isDynamic && category.id === "family") {
+    return {
+      ...category,
+      cards: getFamilyFlashcards(faith),
+    };
+  }
+
+  return category;
 }
 
-// Get random cards for quick practice
-export function getRandomFlashcards(count: number = 10): Flashcard[] {
-  const all = getAllFlashcards();
+// Get all categories with faith-based dynamic cards populated
+export function getAllFlashcardCategories(faith: Faith = "hindu"): FlashcardCategory[] {
+  return FLASHCARD_CATEGORIES.map((category) => {
+    if (category.isDynamic && category.id === "family") {
+      return {
+        ...category,
+        cards: getFamilyFlashcards(faith),
+      };
+    }
+    return category;
+  });
+}
+
+// Get all cards across all categories (with faith)
+export function getAllFlashcards(faith: Faith = "hindu"): Flashcard[] {
+  return getAllFlashcardCategories(faith).flatMap((c) => c.cards);
+}
+
+// Get random cards for quick practice (with faith)
+export function getRandomFlashcards(count: number = 10, faith: Faith = "hindu"): Flashcard[] {
+  const all = getAllFlashcards(faith);
   const shuffled = [...all].sort(() => Math.random() - 0.5);
   return shuffled.slice(0, count);
 }

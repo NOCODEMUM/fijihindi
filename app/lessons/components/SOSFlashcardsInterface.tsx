@@ -1,14 +1,15 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Button from "@/components/ui/Button";
 import {
-  FLASHCARD_CATEGORIES,
   FlashcardCategory,
   Flashcard,
   getRandomFlashcards,
+  getAllFlashcardCategories,
 } from "@/data/conversations/sos-flashcards";
+import { Faith } from "@/data/relationships";
 import { speakFijiHindi } from "@/lib/audio";
 
 interface SOSFlashcardsInterfaceProps {
@@ -29,6 +30,22 @@ export default function SOSFlashcardsInterface({
   const [cardsReviewed, setCardsReviewed] = useState(0);
   const [quickPracticeCards, setQuickPracticeCards] = useState<Flashcard[]>([]);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [userFaith, setUserFaith] = useState<Faith>("hindu");
+  const [categories, setCategories] = useState<FlashcardCategory[]>([]);
+
+  // Load user's faith and generate categories
+  useEffect(() => {
+    let faith: Faith = "hindu";
+    const storedUser = localStorage.getItem("fijihindi_user");
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      if (user.faith) {
+        faith = user.faith as Faith;
+      }
+    }
+    setUserFaith(faith);
+    setCategories(getAllFlashcardCategories(faith));
+  }, []);
 
   const currentCards = viewMode === "quick-practice"
     ? quickPracticeCards
@@ -37,14 +54,16 @@ export default function SOSFlashcardsInterface({
   const currentCard = currentCards[currentCardIndex];
 
   const handleSelectCategory = (category: FlashcardCategory) => {
-    setSelectedCategory(category);
+    // Get the category with populated cards (for dynamic categories like family)
+    const populatedCategory = categories.find(c => c.id === category.id) || category;
+    setSelectedCategory(populatedCategory);
     setCurrentCardIndex(0);
     setIsFlipped(false);
     setViewMode("cards");
   };
 
   const handleQuickPractice = () => {
-    setQuickPracticeCards(getRandomFlashcards(10));
+    setQuickPracticeCards(getRandomFlashcards(10, userFaith));
     setCurrentCardIndex(0);
     setIsFlipped(false);
     setViewMode("quick-practice");
@@ -136,7 +155,7 @@ export default function SOSFlashcardsInterface({
             Browse by Category
           </h2>
           <div className="grid grid-cols-2 gap-3">
-            {FLASHCARD_CATEGORIES.map((category, index) => (
+            {categories.map((category, index) => (
               <motion.button
                 key={category.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -287,8 +306,14 @@ export default function SOSFlashcardsInterface({
                   {currentCard?.english}
                 </p>
 
+                {currentCard?.alternate && (
+                  <p className="text-lg text-white/80 mb-2">
+                    Also: <span className="font-medium">{currentCard.alternate}</span>
+                  </p>
+                )}
+
                 {currentCard?.example && (
-                  <div className="mt-6 p-4 bg-white/20 rounded-xl w-full">
+                  <div className="mt-4 p-4 bg-white/20 rounded-xl w-full">
                     <p className="text-xs text-white/70 uppercase mb-2">Example</p>
                     <p className="text-white font-medium">{currentCard.example.fijiHindi}</p>
                     <p className="text-white/80 text-sm mt-1">{currentCard.example.english}</p>
