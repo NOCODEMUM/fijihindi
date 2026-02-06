@@ -104,23 +104,26 @@ export default function CallInterface({
       if (audioMode) {
         // Audio mode: auto-play and wait for completion
         setIsNaniSpeaking(true);
+        let hasProceeded = false;
+        const finishSpeaking = () => {
+          if (!hasProceeded) {
+            hasProceeded = true;
+            setIsNaniSpeaking(false);
+            proceedToNext();
+          }
+        };
         speakFijiHindi(text, {
-          onEnd: () => {
-            setIsNaniSpeaking(false);
-            proceedToNext();
-          },
-          onError: () => {
-            setIsNaniSpeaking(false);
-            proceedToNext();
-          },
+          onEnd: finishSpeaking,
+          onError: finishSpeaking,
         });
+        // Timeout fallback - proceed after 5 seconds max
+        setTimeout(finishSpeaking, 5000);
       } else {
-        // Text mode: show message immediately, user proceeds manually
+        // Text mode: show message immediately, proceed quickly
         setIsNaniSpeaking(false);
-        // Auto-proceed to show options after a brief moment
         setTimeout(() => {
           proceedToNext();
-        }, 500);
+        }, 800);
       }
     } else if (exchange.speaker === "user" && exchange.options) {
       setShowOptions(true);
@@ -142,16 +145,27 @@ export default function CallInterface({
       english: response.english,
     }]);
 
-    // Speak the user's response
-    speakFijiHindi(response.fijiHindi, {
-      onEnd: () => {
-        // Move to next exchange
+    // Track if we've already moved to next
+    let hasProceeded = false;
+    const proceed = () => {
+      if (!hasProceeded) {
+        hasProceeded = true;
         setCurrentIndex((prev) => prev + 1);
-      },
-      onError: () => {
-        setCurrentIndex((prev) => prev + 1);
-      },
-    });
+      }
+    };
+
+    // Try to speak the user's response (optional)
+    if (audioMode) {
+      speakFijiHindi(response.fijiHindi, {
+        onEnd: proceed,
+        onError: proceed,
+      });
+      // Timeout fallback in case audio never completes
+      setTimeout(proceed, 3000);
+    } else {
+      // Text mode: proceed immediately
+      setTimeout(proceed, 500);
+    }
   };
 
   const formatTime = (seconds: number) => {
