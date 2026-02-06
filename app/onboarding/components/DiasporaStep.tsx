@@ -63,41 +63,41 @@ export default function DiasporaStep({ onNext, onBack }: DiasporaStepProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="flex flex-col min-h-screen bg-background-light dark:bg-background-dark"
+      className="flex flex-col h-screen bg-background-light dark:bg-background-dark overflow-hidden"
     >
-      {/* Header */}
+      {/* Header - Compact */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="text-center pt-6 pb-2 px-4"
+        className="text-center pt-4 pb-2 px-4 flex-shrink-0"
       >
-        <span className="text-4xl mb-2 block">🎉</span>
-        <h2 className="text-2xl font-heading font-bold text-charcoal dark:text-white">
+        <span className="text-3xl mb-1 block">🎉</span>
+        <h2 className="text-xl font-heading font-bold text-charcoal dark:text-white">
           Welcome to the family!
         </h2>
-        <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
+        <p className="text-gray-500 dark:text-gray-400 text-xs mt-0.5">
           You&apos;ve been added to the global Fiji Indian diaspora map
         </p>
       </motion.div>
 
-      {/* User Location Card */}
+      {/* User Location Card - Compact */}
       {userLocation && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="mx-4 mb-2"
+          className="mx-4 mb-2 flex-shrink-0"
         >
-          <div className="bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-4 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <span className="text-primary text-lg">📍</span>
+          <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-3 flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+              <span className="text-primary text-sm">📍</span>
             </div>
             <div>
-              <p className="font-semibold text-charcoal dark:text-white">
+              <p className="font-semibold text-charcoal dark:text-white text-sm">
                 {userLocation.city}, {userLocation.country}
               </p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-xs text-gray-500 dark:text-gray-400">
                 Family from Other / Not Sure
               </p>
             </div>
@@ -105,42 +105,43 @@ export default function DiasporaStep({ onNext, onBack }: DiasporaStepProps) {
         </motion.div>
       )}
 
-      {/* MASSIVE Globe - using built-in showStats */}
+      {/* MASSIVE Globe - Takes most of screen */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.5, duration: 0.6 }}
-        className="flex-1 min-h-[500px]"
+        className="flex-1 relative overflow-hidden"
+        style={{ minHeight: '55vh' }}
       >
-        <DiasporaGlobe showStats={true} className="h-full w-full" />
+        <DiasporaGlobe showStats={true} className="absolute inset-0" />
       </motion.div>
 
-      {/* Bottom Section */}
+      {/* Bottom Section - Compact */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1 }}
-        className="px-4 pb-6 pt-2"
+        className="px-4 pb-4 pt-2 flex-shrink-0"
       >
         {/* Join text */}
-        <p className="text-center mb-1">
+        <p className="text-center text-sm mb-0.5">
           <span className="text-gray-600 dark:text-gray-400">Join </span>
           <span className="text-primary font-bold">{(TOTAL_DIASPORA_COUNT + 1).toLocaleString()}</span>
           <span className="text-gray-600 dark:text-gray-400"> Fiji Indians worldwide</span>
         </p>
-        <p className="text-center text-sm text-gray-500 dark:text-gray-400 mb-4">
+        <p className="text-center text-xs text-gray-500 dark:text-gray-400 mb-3">
           Explore your family tree and learn Fiji Hindi
         </p>
 
         {/* Navigation */}
-        <div className="flex gap-4">
-          <Button variant="ghost" onClick={onBack} className="flex-1">
+        <div className="flex gap-3">
+          <Button variant="ghost" onClick={onBack} className="flex-1 py-3">
             Back
           </Button>
           <Button
             onClick={handleContinue}
             disabled={!userLocation}
-            className="flex-1"
+            className="flex-1 py-3"
           >
             Continue
           </Button>

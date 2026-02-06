@@ -347,7 +347,7 @@ export default function DiasporaGlobe({
 
   if (!mounted) {
     return (
-      <div className={`relative w-full h-[500px] globe-container ${className}`}>
+      <div className={`relative w-full h-full min-h-[400px] globe-container ${className}`}>
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-16 h-16 border-4 border-lagoon border-t-transparent rounded-full animate-spin" />
         </div>
@@ -356,7 +356,7 @@ export default function DiasporaGlobe({
   }
 
   return (
-    <div className={`relative w-full h-[500px] globe-container ${className}`}>
+    <div className={`relative w-full h-full min-h-[500px] globe-container ${className}`}>
       <Canvas
         camera={{ position: [0, 0, 5.5], fov: 45 }}
         style={{ background: "transparent" }}
