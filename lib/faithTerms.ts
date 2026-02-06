@@ -2,6 +2,7 @@
 // This transforms generic terms to faith-specific ones
 
 import { Faith, RELATIONSHIPS, getTermForFaith } from "@/data/relationships";
+import { GREETINGS, getGreetingForFaith } from "@/data/greetings";
 
 // Map of generic terms to relationship IDs
 const TERM_MAPPINGS: Record<string, string> = {
@@ -31,6 +32,17 @@ const TERM_MAPPINGS: Record<string, string> = {
   "Bhaiya": "elderBrother",
 };
 
+// Map of generic greeting terms to greeting IDs
+const GREETING_MAPPINGS: Record<string, string> = {
+  "Namaste": "hello",
+  "Namaskar": "hello",
+  "Dhanyabad": "thankYou",
+  "Shukriya": "thankYou",
+  "Maaf karo": "sorry",
+  "Fir melega": "goodbye",
+  "Khuda Hafiz": "goodbye",
+};
+
 // Get faith-specific term for a generic term
 export function getFaithTerm(genericTerm: string, faith: Faith): string {
   const relationshipId = TERM_MAPPINGS[genericTerm];
@@ -42,11 +54,22 @@ export function getFaithTerm(genericTerm: string, faith: Faith): string {
   return getTermForFaith(relationship, faith);
 }
 
+// Get faith-specific greeting for a generic greeting term
+export function getFaithGreeting(genericTerm: string, faith: Faith): string {
+  const greetingId = GREETING_MAPPINGS[genericTerm];
+  if (!greetingId) return genericTerm;
+
+  const greeting = GREETINGS[greetingId];
+  if (!greeting) return genericTerm;
+
+  return getGreetingForFaith(greeting, faith);
+}
+
 // Transform text by replacing generic terms with faith-specific ones
 export function applyFaithTerms(text: string, faith: Faith): string {
   let result = text;
 
-  // Replace each mapped term
+  // Replace each mapped relationship term
   Object.keys(TERM_MAPPINGS).forEach((term) => {
     const faithTerm = getFaithTerm(term, faith);
     if (faithTerm !== term) {
@@ -59,6 +82,23 @@ export function applyFaithTerms(text: string, faith: Faith): string {
           return faithTerm.charAt(0).toUpperCase() + faithTerm.slice(1);
         }
         return faithTerm;
+      });
+    }
+  });
+
+  // Replace each mapped greeting term
+  Object.keys(GREETING_MAPPINGS).forEach((term) => {
+    const faithGreeting = getFaithGreeting(term, faith);
+    if (faithGreeting !== term) {
+      // Replace whole word only
+      const regex = new RegExp(`\\b${term}\\b`, "gi");
+      result = result.replace(regex, (match) => {
+        // Preserve original case
+        if (match === match.toUpperCase()) return faithGreeting.toUpperCase();
+        if (match[0] === match[0].toUpperCase()) {
+          return faithGreeting.charAt(0).toUpperCase() + faithGreeting.slice(1);
+        }
+        return faithGreeting;
       });
     }
   });
