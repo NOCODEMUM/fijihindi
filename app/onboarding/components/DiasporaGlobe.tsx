@@ -267,10 +267,10 @@ interface StatCardProps {
 
 function StatCard({ title, value, position, delay = 0 }: StatCardProps) {
   const positionClasses = {
-    "top-left": "top-4 left-4",
-    "top-right": "top-4 right-4",
-    "bottom-left": "bottom-4 left-4",
-    "bottom-right": "bottom-4 right-4",
+    "top-left": "top-2 left-2",
+    "top-right": "top-2 right-2",
+    "bottom-left": "bottom-2 left-2",
+    "bottom-right": "bottom-2 right-2",
   };
 
   return (
@@ -278,10 +278,10 @@ function StatCard({ title, value, position, delay = 0 }: StatCardProps) {
       initial={{ opacity: 0, y: position.includes("top") ? -20 : 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.5 }}
-      className={`absolute ${positionClasses[position]} glass-card rounded-2xl px-4 py-3`}
+      className={`absolute ${positionClasses[position]} z-10 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm rounded-xl px-3 py-2 shadow-lg`}
     >
-      <div className="text-xs text-charcoal/60 mb-1">{title}</div>
-      <div className="text-xl font-bold text-charcoal">{value}</div>
+      <div className="text-xs text-gray-500 dark:text-gray-400">{title}</div>
+      <div className="text-lg font-bold text-charcoal dark:text-white">{value}</div>
     </motion.div>
   );
 }
@@ -293,32 +293,32 @@ function TopLocations({ delay = 0 }: { delay?: number }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.5 }}
-      className="absolute bottom-4 left-4 glass-card rounded-2xl px-4 py-3 min-w-[200px]"
+      className="absolute bottom-2 left-2 z-10 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm rounded-xl px-3 py-2 shadow-lg max-w-[180px]"
     >
-      <div className="text-xs text-charcoal/60 mb-3">Top locations</div>
-      <div className="space-y-3">
+      <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">Top locations</div>
+      <div className="space-y-2">
         {topCities.map((loc, index) => (
           <div key={`${loc.city}-${loc.country}`}>
-            <div className="flex justify-between text-sm mb-1">
-              <span className="text-charcoal font-medium">
+            <div className="flex justify-between text-xs mb-0.5">
+              <span className="text-charcoal dark:text-white font-medium">
                 {loc.city} • {loc.country}
               </span>
-              <span className="text-charcoal/60">{loc.count.toLocaleString()}</span>
+              <span className="text-gray-500 dark:text-gray-400 ml-2">{loc.count.toLocaleString()}</span>
             </div>
-            <div className="h-1.5 bg-sand-200 rounded-full overflow-hidden">
+            <div className="h-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${(loc.count / maxCount) * 100}%` }}
                 transition={{ delay: delay + 0.2 + index * 0.1, duration: 0.5 }}
                 className={`h-full rounded-full ${
                   index === 0
-                    ? "bg-lagoon"
+                    ? "bg-primary"
                     : index === 1
-                    ? "bg-hibiscus"
-                    : "bg-mango"
+                    ? "bg-lagoon"
+                    : "bg-peach"
                 }`}
               />
             </div>
