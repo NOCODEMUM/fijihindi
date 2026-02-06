@@ -110,7 +110,7 @@ export default function DiasporaStep({ onNext, onBack }: DiasporaStepProps) {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.5, duration: 0.6 }}
         className="flex-1 relative overflow-hidden"
-        style={{ minHeight: '55vh' }}
+        style={{ minHeight: '45vh' }}
       >
         <DiasporaGlobe showStats={true} className="absolute inset-0" />
       </motion.div>
