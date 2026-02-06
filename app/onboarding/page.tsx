@@ -7,9 +7,11 @@ import HookStep from "./components/HookStep";
 import DiasporaStep from "./components/DiasporaStep";
 import OriginStep from "./components/OriginStep";
 import FaithStep from "./components/FaithStep";
+import FamilySetupStep from "./components/FamilySetupStep";
 import FirstCallStep from "./components/FirstCallStep";
+import { FamilyMember } from "@/app/family-tree/components/FamilyNode";
 
-type OnboardingStep = "hook" | "diaspora" | "origin" | "faith" | "firstCall";
+type OnboardingStep = "hook" | "diaspora" | "origin" | "faith" | "family" | "firstCall";
 
 interface UserData {
   name: string;
@@ -49,6 +51,13 @@ export default function OnboardingPage() {
 
   const handleFaithSubmit = useCallback((faith: string) => {
     setUserData((prev) => ({ ...prev, faith }));
+    setStep("family");
+  }, []);
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleFamilySubmit = useCallback((members: FamilyMember[]) => {
+    // Family tree is saved to localStorage by FamilySetupStep
+    // Just move to next step
     setStep("firstCall");
   }, []);
 
@@ -86,10 +95,11 @@ export default function OnboardingPage() {
     diaspora: 1,
     origin: 2,
     faith: 3,
-    firstCall: 4,
+    family: 4,
+    firstCall: 5,
   };
 
-  const progressSteps = ["diaspora", "origin", "faith"];
+  const progressSteps = ["diaspora", "origin", "faith", "family"];
 
   return (
     <main className="min-h-screen bg-background-light dark:bg-background-dark">
@@ -175,6 +185,20 @@ export default function OnboardingPage() {
                 onNext={handleFaithSubmit}
                 onBack={() => setStep("origin")}
                 initialFaith={userData.faith}
+              />
+            </motion.div>
+          )}
+
+          {step === "family" && (
+            <motion.div
+              key="family"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <FamilySetupStep
+                onNext={handleFamilySubmit}
+                onBack={() => setStep("faith")}
               />
             </motion.div>
           )}
