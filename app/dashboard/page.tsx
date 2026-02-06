@@ -8,8 +8,9 @@ import Logo from "@/components/ui/Logo";
 import PhoneButton from "@/components/ui/PhoneButton";
 import StreakBadge from "@/components/ui/StreakBadge";
 import BottomNav from "@/components/ui/BottomNav";
-import { FIJI_REGIONS, TOTAL_DIASPORA_COUNT } from "@/lib/constants";
+import { FIJI_REGIONS, TOTAL_DIASPORA_COUNT, getAvailableModes, LessonMode } from "@/lib/constants";
 import { getAllConversations, Conversation } from "@/data/conversations/intro-greeting";
+import { getCurrentWeek, getFirstLessonDate } from "@/lib/modeRotation";
 
 interface UserData {
   name: string;
@@ -38,6 +39,7 @@ export default function DashboardPage() {
   });
   const [greeting, setGreeting] = useState("");
   const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [availableModes, setAvailableModes] = useState<LessonMode[]>([]);
 
   useEffect(() => {
     // Check if user completed onboarding
@@ -61,6 +63,11 @@ export default function DashboardPage() {
 
     // Load conversations
     setConversations(getAllConversations());
+
+    // Load available lesson modes based on user's week
+    const firstDate = getFirstLessonDate();
+    const weekNumber = getCurrentWeek(firstDate);
+    setAvailableModes(getAvailableModes(weekNumber));
 
     // Set greeting based on time
     const hour = new Date().getHours();
@@ -129,23 +136,74 @@ export default function DashboardPage() {
           )}
         </motion.div>
 
-        {/* Call Nani Button - Main CTA */}
+        {/* Quick Actions Row */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="mb-8"
+          className="mb-6 grid grid-cols-2 gap-3"
         >
-          <Card variant="elevated" className="p-8 text-center bg-gradient-to-br from-white to-green-50 dark:from-gray-800 dark:to-gray-900">
-            <PhoneButton
-              onClick={handleCallNani}
-              label="Call Nani"
-              size="lg"
-            />
-            <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-              Tap to start a conversation
-            </p>
+          {/* Start Lesson */}
+          <Card
+            variant="elevated"
+            className="p-4 text-center bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary/20 cursor-pointer hover:shadow-lg transition-all"
+            onClick={handleCallNani}
+          >
+            <div className="w-12 h-12 mx-auto rounded-full bg-primary/20 flex items-center justify-center mb-2">
+              <span className="text-2xl">📞</span>
+            </div>
+            <p className="font-semibold text-charcoal dark:text-white">Start Lesson</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Quick practice</p>
           </Card>
+
+          {/* Family Tree */}
+          <Card
+            variant="elevated"
+            className="p-4 text-center bg-gradient-to-br from-secondary/10 to-secondary/5 border-2 border-secondary/20 cursor-pointer hover:shadow-lg transition-all"
+            onClick={() => router.push("/family-tree")}
+          >
+            <div className="w-12 h-12 mx-auto rounded-full bg-secondary/20 flex items-center justify-center mb-2">
+              <span className="text-2xl">🌳</span>
+            </div>
+            <p className="font-semibold text-charcoal dark:text-white">Family Tree</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Learn terms</p>
+          </Card>
+        </motion.div>
+
+        {/* Lesson Modes */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          className="mb-6"
+        >
+          <h2 className="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-3">
+            Lesson Modes
+          </h2>
+          <div className="grid grid-cols-2 gap-2">
+            {availableModes.map((mode, index) => (
+              <motion.button
+                key={mode.id}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2 + index * 0.05 }}
+                onClick={() => router.push(`/lessons?mode=${mode.id}`)}
+                className="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:border-primary hover:shadow-md transition-all text-left"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">{mode.characterEmoji}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-sm text-charcoal dark:text-white truncate">
+                      {mode.name}
+                    </p>
+                    <p className="text-xs text-gray-400 truncate">
+                      {mode.character}
+                    </p>
+                  </div>
+                </div>
+              </motion.button>
+            ))}
+          </div>
         </motion.div>
 
         {/* Progress Stats */}

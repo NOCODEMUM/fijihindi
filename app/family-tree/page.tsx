@@ -13,27 +13,31 @@ import BottomNav from "@/components/ui/BottomNav";
 import SaveProgressPrompt from "@/app/components/SaveProgressPrompt";
 import { useAuth } from "@/app/contexts/AuthContext";
 import { speakFijiHindi } from "@/lib/audio";
+import { Faith, RELATIONSHIPS, getTermForFaith } from "@/data/relationships";
+import { getUserFaith } from "@/lib/faithTerms";
 
 // Generate unique IDs
 const generateId = () => Math.random().toString(36).substr(2, 9);
 
-// Common relationship terms to display
-const RELATIONSHIP_TERMS = [
-  { fijiHindi: "Maa", english: "Mother", emoji: "👩" },
-  { fijiHindi: "Baap", english: "Father", emoji: "👨" },
-  { fijiHindi: "Nani", english: "Grandmother (maternal)", emoji: "👵" },
-  { fijiHindi: "Nana", english: "Grandfather (maternal)", emoji: "👴" },
-  { fijiHindi: "Dadi", english: "Grandmother (paternal)", emoji: "👵" },
-  { fijiHindi: "Dada", english: "Grandfather (paternal)", emoji: "👴" },
-  { fijiHindi: "Bhai", english: "Brother", emoji: "👦" },
-  { fijiHindi: "Bahin", english: "Sister", emoji: "👧" },
-  { fijiHindi: "Beta", english: "Son", emoji: "👦" },
-  { fijiHindi: "Beti", english: "Daughter", emoji: "👧" },
-  { fijiHindi: "Chacha", english: "Uncle (paternal)", emoji: "👨" },
-  { fijiHindi: "Chachi", english: "Aunt (paternal)", emoji: "👩" },
-  { fijiHindi: "Mama", english: "Uncle (maternal)", emoji: "👨" },
-  { fijiHindi: "Mami", english: "Aunt (maternal)", emoji: "👩" },
+// Relationship IDs to display as terms (will use faith-based terms)
+const RELATIONSHIP_TERM_IDS = [
+  "mother", "father", "nani", "nana", "dadi", "dada",
+  "brother", "sister", "son", "daughter",
+  "chacha", "chachi", "mama", "mami"
 ];
+
+// Helper to get terms based on user's faith
+function getRelationshipTerms(faith: Faith) {
+  return RELATIONSHIP_TERM_IDS.map(id => {
+    const rel = RELATIONSHIPS[id];
+    if (!rel) return null;
+    return {
+      fijiHindi: getTermForFaith(rel, faith),
+      english: rel.english,
+      emoji: rel.gender === "male" ? "👨" : rel.gender === "female" ? "👩" : "👤",
+    };
+  }).filter(Boolean) as { fijiHindi: string; english: string; emoji: string }[];
+}
 
 export default function FamilyTreePage() {
   const router = useRouter();
@@ -48,8 +52,10 @@ export default function FamilyTreePage() {
   const [showSavePrompt, setShowSavePrompt] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [playingTerm, setPlayingTerm] = useState<string | null>(null);
+  const [userFaith, setUserFaith] = useState<Faith>("hindu");
+  const [relationshipTerms, setRelationshipTerms] = useState<{ fijiHindi: string; english: string; emoji: string }[]>([]);
 
-  // Initialize with "self" node
+  // Initialize with "self" node and load user faith
   useEffect(() => {
     const stored = localStorage.getItem("fijihindi_family_tree");
     if (stored) {
@@ -63,6 +69,11 @@ export default function FamilyTreePage() {
       };
       setMembers([selfMember]);
     }
+
+    // Load user's faith and generate terms
+    const faith = getUserFaith();
+    setUserFaith(faith);
+    setRelationshipTerms(getRelationshipTerms(faith));
   }, []);
 
   // Persist to localStorage
@@ -218,7 +229,7 @@ export default function FamilyTreePage() {
               className="overflow-hidden"
             >
               <Card variant="default" className="mt-2 divide-y divide-gray-100 dark:divide-gray-800">
-                {RELATIONSHIP_TERMS.map((term, index) => (
+                {relationshipTerms.map((term, index) => (
                   <motion.div
                     key={term.fijiHindi}
                     initial={{ opacity: 0, x: -20 }}
