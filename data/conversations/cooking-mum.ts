@@ -1,4 +1,5 @@
-// Cooking with Mum - Fiji recipes with vocabulary
+// Cooking with Mum - AUTHENTIC FIJI HINDI
+// Fiji recipes with vocabulary
 
 export interface RecipeStep {
   id: string;
@@ -40,23 +41,23 @@ export const RECIPES: Recipe[] = [
       {
         id: "1",
         instruction: {
-          fijiHindi: "Pehle, dhal ko paani mein dhona hai.",
+          fijiHindi: "Pehle, dhal-wa ke pani me dhona hai.",
           english: "First, wash the lentils in water.",
         },
         vocabulary: [
           { fijiHindi: "Dhal", english: "Lentils", emoji: "🫘" },
-          { fijiHindi: "Paani", english: "Water", emoji: "💧" },
+          { fijiHindi: "Pani", english: "Water", emoji: "💧" },
           { fijiHindi: "Dhona", english: "To wash", emoji: "🧼" },
         ],
         mumSays: {
-          fijiHindi: "Teen baar dhona, saaf hona chahiye!",
+          fijiHindi: "Tin baar dhona, saaf hona chahiye!",
           english: "Wash three times, must be clean!",
         },
       },
       {
         id: "2",
         instruction: {
-          fijiHindi: "Ab pressure cooker mein dhal daalo.",
+          fijiHindi: "Ab pressure cooker me dhal daalo.",
           english: "Now put lentils in the pressure cooker.",
         },
         vocabulary: [
@@ -64,7 +65,7 @@ export const RECIPES: Recipe[] = [
           { fijiHindi: "Daalna", english: "To put/add", emoji: "➕" },
         ],
         mumSays: {
-          fijiHindi: "Paani dhal se thoda zyaada hona chahiye.",
+          fijiHindi: "Pani dhal se thora zyaada hona chahiye.",
           english: "Water should be a bit more than lentils.",
         },
       },
@@ -80,26 +81,26 @@ export const RECIPES: Recipe[] = [
           { fijiHindi: "Mirchi", english: "Chili", emoji: "🌶️" },
         ],
         mumSays: {
-          fijiHindi: "Mirchi kam daalo, nahi toh bahut teekha ho jayega!",
+          fijiHindi: "Mirchi kam daalo, nai to bahut teekha ho jaega!",
           english: "Add less chili, otherwise it'll be too spicy!",
         },
       },
       {
         id: "4",
         instruction: {
-          fijiHindi: "Aag lagao aur teen seeti aane do.",
+          fijiHindi: "Aag lagao aur tin seeti aane do.",
           english: "Put on fire and let three whistles come.",
         },
         vocabulary: [
           { fijiHindi: "Aag", english: "Fire/flame", emoji: "🔥" },
           { fijiHindi: "Seeti", english: "Whistle", emoji: "📢" },
-          { fijiHindi: "Teen", english: "Three", emoji: "3️⃣" },
+          { fijiHindi: "Tin", english: "Three", emoji: "3️⃣" },
         ],
       },
       {
         id: "5",
         instruction: {
-          fijiHindi: "Alag se tadka banao - ghee mein jeera bhuno.",
+          fijiHindi: "Alag se tadka banao - ghee me jeera bhuno.",
           english: "Make tempering separately - roast cumin in ghee.",
         },
         vocabulary: [
@@ -109,22 +110,22 @@ export const RECIPES: Recipe[] = [
           { fijiHindi: "Bhunna", english: "To roast", emoji: "🍳" },
         ],
         mumSays: {
-          fijiHindi: "Jeera jab brown ho jaye, tabhi achchha tadka hota hai!",
+          fijiHindi: "Jeera jab brown ho jaye, tabhi acha tadka hota!",
           english: "When cumin turns brown, that's good tempering!",
         },
       },
       {
         id: "6",
         instruction: {
-          fijiHindi: "Tadka dhal mein daalo. Bus, tayaar hai!",
+          fijiHindi: "Tadka dhal me daalo. Bas, ready hai!",
           english: "Pour tempering in dal. Done, it's ready!",
         },
         vocabulary: [
-          { fijiHindi: "Tayaar", english: "Ready", emoji: "✅" },
-          { fijiHindi: "Bus", english: "That's it/enough", emoji: "👌" },
+          { fijiHindi: "Ready", english: "Ready", emoji: "✅" },
+          { fijiHindi: "Bas", english: "That's it/enough", emoji: "👌" },
         ],
         mumSays: {
-          fijiHindi: "Garam chawal ke saath khao, maza aayega!",
+          fijiHindi: "Garam chawal ke saath khao, maza aega!",
           english: "Eat with hot rice, you'll enjoy it!",
         },
       },
@@ -134,7 +135,7 @@ export const RECIPES: Recipe[] = [
       "Daalna - To add",
       "Tadka - Tempering",
       "Bhunna - To roast",
-      "Tayaar - Ready",
+      "Ready - Ready",
       "Garam - Hot",
     ],
   },
@@ -149,7 +150,7 @@ export const RECIPES: Recipe[] = [
       {
         id: "1",
         instruction: {
-          fijiHindi: "Bartan mein aata daalo.",
+          fijiHindi: "Bartan me aata daalo.",
           english: "Put flour in a bowl.",
         },
         vocabulary: [
@@ -157,19 +158,19 @@ export const RECIPES: Recipe[] = [
           { fijiHindi: "Aata", english: "Flour (wheat)", emoji: "🌾" },
         ],
         mumSays: {
-          fijiHindi: "Achchha aata lena, Fiji wala best hai!",
+          fijiHindi: "Acha aata lena, Fiji wala best hai!",
           english: "Get good flour, Fiji one is best!",
         },
       },
       {
         id: "2",
         instruction: {
-          fijiHindi: "Thoda namak aur paani milao.",
+          fijiHindi: "Thora namak aur pani milao.",
           english: "Mix a little salt and water.",
         },
         vocabulary: [
           { fijiHindi: "Milana", english: "To mix", emoji: "🔄" },
-          { fijiHindi: "Thoda", english: "A little", emoji: "🤏" },
+          { fijiHindi: "Thora", english: "A little", emoji: "🤏" },
         ],
       },
       {
@@ -213,7 +214,7 @@ export const RECIPES: Recipe[] = [
       {
         id: "6",
         instruction: {
-          fijiHindi: "Dono taraf sekho, phool jaye toh tayaar!",
+          fijiHindi: "Dono taraf sekho, phool jaye to ready!",
           english: "Cook both sides, when it puffs up it's ready!",
         },
         vocabulary: [
@@ -222,8 +223,8 @@ export const RECIPES: Recipe[] = [
           { fijiHindi: "Phoolna", english: "To puff up", emoji: "🎈" },
         ],
         mumSays: {
-          fijiHindi: "Ghee lagao, makkhan jaisa mast lagega!",
-          english: "Apply ghee, it'll taste amazing like butter!",
+          fijiHindi: "Ghee lagao, julum mita lagega!",
+          english: "Apply ghee, it'll taste amazing!",
         },
       },
     ],
@@ -234,6 +235,7 @@ export const RECIPES: Recipe[] = [
       "Tawa - Flat pan",
       "Sekna - To cook/roast",
       "Phoolna - To puff up",
+      "Julum - Amazing",
     ],
   },
   {
@@ -247,11 +249,11 @@ export const RECIPES: Recipe[] = [
       {
         id: "1",
         instruction: {
-          fijiHindi: "Bartan mein paani daalo, aag par rakho.",
+          fijiHindi: "Bartan me pani daalo, aag pe rakho.",
           english: "Put water in pot, keep on flame.",
         },
         vocabulary: [
-          { fijiHindi: "Paani", english: "Water", emoji: "💧" },
+          { fijiHindi: "Pani", english: "Water", emoji: "💧" },
           { fijiHindi: "Aag", english: "Fire/flame", emoji: "🔥" },
           { fijiHindi: "Rakhna", english: "To keep/place", emoji: "📍" },
         ],
@@ -268,7 +270,7 @@ export const RECIPES: Recipe[] = [
           { fijiHindi: "Kootna", english: "To crush", emoji: "🔨" },
         ],
         mumSays: {
-          fijiHindi: "Adrak zyaada daalo, thand mein achchha hai!",
+          fijiHindi: "Adrak zyaada daalo, thanda me acha hai!",
           english: "Add more ginger, good in cold weather!",
         },
       },
@@ -294,8 +296,8 @@ export const RECIPES: Recipe[] = [
           { fijiHindi: "Phir se", english: "Again", emoji: "🔁" },
         ],
         mumSays: {
-          fijiHindi: "Doodh zyaada ho toh chai mast lagti hai!",
-          english: "More milk makes the tea taste great!",
+          fijiHindi: "Doodh zyaada ho to chai julum lagta!",
+          english: "More milk makes the tea taste amazing!",
         },
       },
       {
@@ -312,7 +314,7 @@ export const RECIPES: Recipe[] = [
       {
         id: "6",
         instruction: {
-          fijiHindi: "Chaan ke cup mein daalo. Chai tayaar!",
+          fijiHindi: "Chaan ke cup me daalo. Chai ready!",
           english: "Strain into cup. Tea is ready!",
         },
         vocabulary: [
@@ -320,7 +322,7 @@ export const RECIPES: Recipe[] = [
           { fijiHindi: "Cup", english: "Cup", emoji: "☕" },
         ],
         mumSays: {
-          fijiHindi: "Garam garam piyo, mazaa aayega!",
+          fijiHindi: "Garam garam piyo, mazaa aega!",
           english: "Drink it hot hot, you'll enjoy!",
         },
       },
@@ -333,6 +335,7 @@ export const RECIPES: Recipe[] = [
       "Doodh - Milk",
       "Cheeni - Sugar",
       "Chaanna - To strain",
+      "Julum - Amazing",
     ],
   },
 ];

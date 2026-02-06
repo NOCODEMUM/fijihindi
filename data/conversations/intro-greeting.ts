@@ -1,4 +1,4 @@
-// Conversation data for Nani phone calls
+// Conversation data for Nani phone calls - AUTHENTIC FIJI HINDI
 
 export interface DialogueExchange {
   id: string;
@@ -16,9 +16,9 @@ export interface Conversation {
   title: string;
   description: string;
   difficulty: "beginner" | "intermediate" | "advanced";
-  duration: string; // estimated duration
+  duration: string;
   dialogue: DialogueExchange[];
-  phrases: string[]; // Key phrases taught in this conversation
+  phrases: string[];
   orderIndex: number;
 }
 
@@ -34,7 +34,7 @@ export const CONVERSATIONS: Conversation[] = [
       {
         id: "1",
         speaker: "nani",
-        fijiHindi: "Namaste beta! Kaise ho?",
+        fijiHindi: "Namaste beta! Kaise hai tum?",
         english: "Hello dear! How are you?",
       },
       {
@@ -43,15 +43,15 @@ export const CONVERSATIONS: Conversation[] = [
         fijiHindi: "",
         english: "",
         options: [
-          { fijiHindi: "Namaste Nani! Mein theek hoon.", english: "Hello Nani! I am fine." },
-          { fijiHindi: "Namaste! Bahut achchha hoon.", english: "Hello! I am very good." },
-          { fijiHindi: "Nani! Mein khush hoon aapko dekh ke.", english: "Nani! I am happy to see you." },
+          { fijiHindi: "Namaste Nani! Ham tik hai.", english: "Hello Nani! I am fine." },
+          { fijiHindi: "Namaste! Ham bahut acha hai.", english: "Hello! I am very good." },
+          { fijiHindi: "Nani! Ham khush hai tumka dekh ke.", english: "Nani! I am happy to see you." },
         ],
       },
       {
         id: "3",
         speaker: "nani",
-        fijiHindi: "Bahut achchha! Tum Fiji Hindi seekhna chahte ho?",
+        fijiHindi: "Bahut acha! Tum Fiji Hindi sikhna chahta?",
         english: "Very good! You want to learn Fiji Hindi?",
       },
       {
@@ -60,15 +60,15 @@ export const CONVERSATIONS: Conversation[] = [
         fijiHindi: "",
         english: "",
         options: [
-          { fijiHindi: "Haan Nani, mein seekhna chahta hoon.", english: "Yes Nani, I want to learn." },
-          { fijiHindi: "Bilkul! Sikhaao mujhe.", english: "Absolutely! Teach me." },
-          { fijiHindi: "Haan, please sikhaao.", english: "Yes, please teach." },
+          { fijiHindi: "Ha Nani, ham sikhna chahta.", english: "Yes Nani, I want to learn." },
+          { fijiHindi: "Habrat! Sikhao hamka.", english: "Yes! Teach me." },
+          { fijiHindi: "Ha, please sikhao.", english: "Yes, please teach." },
         ],
       },
       {
         id: "5",
         speaker: "nani",
-        fijiHindi: "Achchha beta! Hum roz baat karenge. Ab phone rakh do, phir milenge!",
+        fijiHindi: "Acha beta! Ham roz baat karega. Ab phone rakh do, fir melega!",
         english: "Good dear! We will talk every day. Hang up now, see you later!",
       },
       {
@@ -77,19 +77,19 @@ export const CONVERSATIONS: Conversation[] = [
         fijiHindi: "",
         english: "",
         options: [
-          { fijiHindi: "Theek hai Nani, phir milenge!", english: "Okay Nani, see you later!" },
-          { fijiHindi: "Dhanyavaad Nani!", english: "Thank you Nani!" },
-          { fijiHindi: "Bye Nani, kal baat karenge!", english: "Bye Nani, we'll talk tomorrow!" },
+          { fijiHindi: "Tik hai Nani, fir melega!", english: "Okay Nani, see you later!" },
+          { fijiHindi: "Dhanyabad Nani!", english: "Thank you Nani!" },
+          { fijiHindi: "Bye Nani, kal baat karega!", english: "Bye Nani, we'll talk tomorrow!" },
         ],
       },
     ],
     phrases: [
       "Namaste - Hello/Greetings",
-      "Kaise ho? - How are you?",
-      "Mein theek hoon - I am fine",
-      "Bahut achchha - Very good",
-      "Phir milenge - See you later",
-      "Dhanyavaad - Thank you",
+      "Kaise hai? - How are you?",
+      "Ham tik hai - I am fine",
+      "Bahut acha - Very good",
+      "Fir melega - See you later",
+      "Dhanyabad - Thank you",
     ],
   },
   {
@@ -103,7 +103,7 @@ export const CONVERSATIONS: Conversation[] = [
       {
         id: "1",
         speaker: "nani",
-        fijiHindi: "Good morning beta! Subah ho gayi, uth gaye?",
+        fijiHindi: "Good morning beta! Subah ho gaya, uth gaya?",
         english: "Good morning dear! Morning has come, did you wake up?",
       },
       {
@@ -112,16 +112,16 @@ export const CONVERSATIONS: Conversation[] = [
         fijiHindi: "",
         english: "",
         options: [
-          { fijiHindi: "Haan Nani, abhi utha.", english: "Yes Nani, just woke up." },
-          { fijiHindi: "Good morning Nani! Haan, uth gaya.", english: "Good morning Nani! Yes, I woke up." },
-          { fijiHindi: "Nani, thoda late ho gaya aaj.", english: "Nani, I was a bit late today." },
+          { fijiHindi: "Ha Nani, just utha.", english: "Yes Nani, just woke up." },
+          { fijiHindi: "Good morning Nani! Ha, uth gaya.", english: "Good morning Nani! Yes, I woke up." },
+          { fijiHindi: "Nani, thora late ho gaya aaj.", english: "Nani, I was a bit late today." },
         ],
       },
       {
         id: "3",
         speaker: "nani",
-        fijiHindi: "Achchha hai! Naashta kiya?",
-        english: "That's good! Did you have breakfast?",
+        fijiHindi: "Acha hai! Khana khaya?",
+        english: "That's good! Did you eat?",
       },
       {
         id: "4",
@@ -129,16 +129,16 @@ export const CONVERSATIONS: Conversation[] = [
         fijiHindi: "",
         english: "",
         options: [
-          { fijiHindi: "Haan, naashta kar liya.", english: "Yes, I had breakfast." },
-          { fijiHindi: "Abhi nahi, baad mein karunga.", english: "Not yet, I will later." },
+          { fijiHindi: "Ha, khana kha liya.", english: "Yes, I ate." },
+          { fijiHindi: "Abhi nai, baad me karega.", english: "Not yet, I will later." },
           { fijiHindi: "Chai pi liya bas.", english: "Just had chai." },
         ],
       },
       {
         id: "5",
         speaker: "nani",
-        fijiHindi: "Theek hai beta. Khaana zaroori hai! Aaj kya karne wale ho?",
-        english: "Okay dear. Food is important! What are you going to do today?",
+        fijiHindi: "Tik hai beta. Khana zaroori hai! Aaj kaunchi karta?",
+        english: "Okay dear. Food is important! What are you doing today?",
       },
       {
         id: "6",
@@ -146,22 +146,22 @@ export const CONVERSATIONS: Conversation[] = [
         fijiHindi: "",
         english: "",
         options: [
-          { fijiHindi: "Kaam pe jaana hai.", english: "I have to go to work." },
-          { fijiHindi: "Ghar pe rahunga aaj.", english: "I'll stay home today." },
-          { fijiHindi: "Thoda padhai karunga.", english: "I'll study a bit." },
+          { fijiHindi: "Kaam pe jana hai.", english: "I have to go to work." },
+          { fijiHindi: "Ghar pe rahega aaj.", english: "I'll stay home today." },
+          { fijiHindi: "Thora study karega.", english: "I'll study a bit." },
         ],
       },
       {
         id: "7",
         speaker: "nani",
-        fijiHindi: "Achchha beta, dhyan rakhna apna. Baad mein phone karna!",
+        fijiHindi: "Acha beta, apna dhyan rakhna. Baad me phone karna!",
         english: "Okay dear, take care of yourself. Call later!",
       },
     ],
     phrases: [
       "Subah - Morning",
-      "Uth gaye? - Did you wake up?",
-      "Naashta - Breakfast",
+      "Uth gaya? - Did you wake up?",
+      "Khana khaya? - Did you eat?",
       "Chai - Tea",
       "Kaam - Work",
       "Dhyan rakhna - Take care",
@@ -178,7 +178,7 @@ export const CONVERSATIONS: Conversation[] = [
       {
         id: "1",
         speaker: "nani",
-        fijiHindi: "Beta, tumhara parivar kaise hai?",
+        fijiHindi: "Beta, tumre family kaise hai?",
         english: "Dear, how is your family?",
       },
       {
@@ -187,15 +187,15 @@ export const CONVERSATIONS: Conversation[] = [
         fijiHindi: "",
         english: "",
         options: [
-          { fijiHindi: "Sab theek hai Nani.", english: "Everyone is fine Nani." },
-          { fijiHindi: "Parivar achchha hai, shukriya.", english: "Family is good, thank you." },
-          { fijiHindi: "Maa-Baap theek hai.", english: "Mom and Dad are fine." },
+          { fijiHindi: "Sab tik hai Nani.", english: "Everyone is fine Nani." },
+          { fijiHindi: "Family acha hai, shukriya.", english: "Family is good, thank you." },
+          { fijiHindi: "Maa-Baap tik hai.", english: "Mom and Dad are fine." },
         ],
       },
       {
         id: "3",
         speaker: "nani",
-        fijiHindi: "Bahut achchha! Tumhara Maa kya kar rahi hai?",
+        fijiHindi: "Bahut acha! Tumre Maa kaunchi karta?",
         english: "Very good! What is your mother doing?",
       },
       {
@@ -205,14 +205,14 @@ export const CONVERSATIONS: Conversation[] = [
         english: "",
         options: [
           { fijiHindi: "Maa ghar pe hai.", english: "Mom is at home." },
-          { fijiHindi: "Maa kaam pe gayi hai.", english: "Mom went to work." },
-          { fijiHindi: "Maa khana bana rahi hai.", english: "Mom is cooking food." },
+          { fijiHindi: "Maa kaam pe gaya hai.", english: "Mom went to work." },
+          { fijiHindi: "Maa khana banata.", english: "Mom is cooking food." },
         ],
       },
       {
         id: "5",
         speaker: "nani",
-        fijiHindi: "Aur Baap? Unko mera namaste bolna!",
+        fijiHindi: "Aur Baap? Woke hamra namaste bolna!",
         english: "And Dad? Tell him my greetings!",
       },
       {
@@ -221,20 +221,20 @@ export const CONVERSATIONS: Conversation[] = [
         fijiHindi: "",
         english: "",
         options: [
-          { fijiHindi: "Zaroor Nani, bol dunga.", english: "Sure Nani, I will tell him." },
-          { fijiHindi: "Baap bhi theek hai, namaste pahuncha dunga.", english: "Dad is also fine, I'll pass on the greeting." },
-          { fijiHindi: "Haan Nani, bol deta hoon.", english: "Yes Nani, I'll tell him." },
+          { fijiHindi: "Zaroor Nani, bol dega.", english: "Sure Nani, I will tell him." },
+          { fijiHindi: "Baap bhi tik hai, namaste pahuncha dega.", english: "Dad is also fine, I'll pass on the greeting." },
+          { fijiHindi: "Ha Nani, bol deta.", english: "Yes Nani, I'll tell him." },
         ],
       },
       {
         id: "7",
         speaker: "nani",
-        fijiHindi: "Achchha beta! Parivar sabse zaroori hai. Yaad rakhna!",
+        fijiHindi: "Acha beta! Family sabse zaroori hai. Yaad rakhna!",
         english: "Good dear! Family is most important. Remember that!",
       },
     ],
     phrases: [
-      "Parivar - Family",
+      "Family - Family",
       "Maa - Mother",
       "Baap - Father",
       "Ghar - Home",
@@ -253,7 +253,7 @@ export const CONVERSATIONS: Conversation[] = [
       {
         id: "1",
         speaker: "nani",
-        fijiHindi: "Beta, wahaan mausam kaisa hai aaj?",
+        fijiHindi: "Beta, waha mausam kaisa hai aaj?",
         english: "Dear, how is the weather there today?",
       },
       {
@@ -264,13 +264,13 @@ export const CONVERSATIONS: Conversation[] = [
         options: [
           { fijiHindi: "Bahut garmi hai Nani.", english: "It's very hot Nani." },
           { fijiHindi: "Thanda hai aaj.", english: "It's cold today." },
-          { fijiHindi: "Achchha mausam hai.", english: "The weather is nice." },
+          { fijiHindi: "Acha mausam hai.", english: "The weather is nice." },
         ],
       },
       {
         id: "3",
         speaker: "nani",
-        fijiHindi: "Achchha? Yahan Fiji mein to hamesha garmi hai!",
+        fijiHindi: "Sachi? Yaha Fiji me to hamesha garmi hai!",
         english: "Really? Here in Fiji it's always hot!",
       },
       {
@@ -279,15 +279,15 @@ export const CONVERSATIONS: Conversation[] = [
         fijiHindi: "",
         english: "",
         options: [
-          { fijiHindi: "Haan Nani, Fiji mein garmi achchhi hai.", english: "Yes Nani, the heat in Fiji is nice." },
-          { fijiHindi: "Mujhe Fiji ki garmi yaad aati hai.", english: "I miss Fiji's heat." },
-          { fijiHindi: "Wahaan baarish bhi hoti hai na?", english: "It rains there too right?" },
+          { fijiHindi: "Ha Nani, Fiji me garmi acha hai.", english: "Yes Nani, the heat in Fiji is nice." },
+          { fijiHindi: "Hamka Fiji ke garmi yaad aata.", english: "I miss Fiji's heat." },
+          { fijiHindi: "Waha baarish bhi hota hai na?", english: "It rains there too right?" },
         ],
       },
       {
         id: "5",
         speaker: "nani",
-        fijiHindi: "Haan beta, baarish bhi aati hai. Par dhoop zyaada hai!",
+        fijiHindi: "Ha beta, baarish bhi aata. Par dhoop zyaada hai!",
         english: "Yes dear, rain comes too. But sunshine is more!",
       },
     ],
@@ -311,7 +311,7 @@ export const CONVERSATIONS: Conversation[] = [
       {
         id: "1",
         speaker: "nani",
-        fijiHindi: "Beta, kya khaya aaj?",
+        fijiHindi: "Beta, kaunchi khaya aaj?",
         english: "Dear, what did you eat today?",
       },
       {
@@ -320,15 +320,15 @@ export const CONVERSATIONS: Conversation[] = [
         fijiHindi: "",
         english: "",
         options: [
-          { fijiHindi: "Roti sabzi khaya Nani.", english: "I ate roti and vegetables Nani." },
-          { fijiHindi: "Chawal dal khaya.", english: "I ate rice and dal." },
+          { fijiHindi: "Roti tarkari khaya Nani.", english: "I ate roti and curry Nani." },
+          { fijiHindi: "Chawal dhal khaya.", english: "I ate rice and dal." },
           { fijiHindi: "Bahar se kuch khaya.", english: "I ate something from outside." },
         ],
       },
       {
         id: "3",
         speaker: "nani",
-        fijiHindi: "Achchha! Tumko dhokla pasand hai na? Mein banati thi.",
+        fijiHindi: "Acha! Tumka dhokla pasand hai na? Ham banata tha.",
         english: "Good! You like dhokla right? I used to make it.",
       },
       {
@@ -337,15 +337,15 @@ export const CONVERSATIONS: Conversation[] = [
         fijiHindi: "",
         english: "",
         options: [
-          { fijiHindi: "Haan Nani, bahut pasand hai!", english: "Yes Nani, I love it!" },
-          { fijiHindi: "Aapka dhokla sabse achchha tha.", english: "Your dhokla was the best." },
-          { fijiHindi: "Mujhe recipe sikhaao Nani.", english: "Teach me the recipe Nani." },
+          { fijiHindi: "Ha Nani, bahut pasand hai!", english: "Yes Nani, I love it!" },
+          { fijiHindi: "Tumre dhokla sabse acha tha.", english: "Your dhokla was the best." },
+          { fijiHindi: "Hamka recipe sikhao Nani.", english: "Teach me the recipe Nani." },
         ],
       },
       {
         id: "5",
         speaker: "nani",
-        fijiHindi: "Zaroor sikhaungi! Agla phone pe recipe bataungi.",
+        fijiHindi: "Zaroor sikhaega! Next phone pe recipe bataega.",
         english: "Definitely I'll teach! I'll tell the recipe on the next call.",
       },
       {
@@ -354,20 +354,20 @@ export const CONVERSATIONS: Conversation[] = [
         fijiHindi: "",
         english: "",
         options: [
-          { fijiHindi: "Dhanyavaad Nani!", english: "Thank you Nani!" },
-          { fijiHindi: "Mein wait karunga.", english: "I will wait." },
-          { fijiHindi: "Bahut achchha, Nani!", english: "Very good, Nani!" },
+          { fijiHindi: "Dhanyabad Nani!", english: "Thank you Nani!" },
+          { fijiHindi: "Ham wait karega.", english: "I will wait." },
+          { fijiHindi: "Julum, Nani!", english: "Awesome, Nani!" },
         ],
       },
     ],
     phrases: [
       "Khana - Food/Eat",
       "Roti - Flatbread",
-      "Sabzi - Vegetables",
+      "Tarkari - Curry/Vegetables",
       "Chawal - Rice",
-      "Dal - Lentils",
+      "Dhal - Lentils",
       "Pasand - Like/Favorite",
-      "Recipe - Recipe",
+      "Julum - Amazing/Awesome",
     ],
   },
 ];

@@ -1,4 +1,5 @@
-// Family Gathering scenarios - multi-character party scenes
+// Family Gathering scenarios - AUTHENTIC FIJI HINDI
+// Multi-character party scenes
 
 export interface FamilyMemberChar {
   id: string;
@@ -38,50 +39,50 @@ export const GATHERING_SCENARIOS: GatheringScenario[] = [
       { id: "chacha", name: "Chacha", emoji: "👨", relationship: "Uncle", position: { x: 25, y: 45 }, talked: false },
       { id: "chachi", name: "Chachi", emoji: "👩", relationship: "Aunt", position: { x: 75, y: 45 }, talked: false },
       { id: "bhai", name: "Rohit Bhai", emoji: "👦", relationship: "Cousin", position: { x: 30, y: 65 }, talked: false },
-      { id: "bahin", name: "Priya", emoji: "👧", relationship: "Cousin", position: { x: 70, y: 65 }, talked: false },
+      { id: "bhaini", name: "Priya", emoji: "👧", relationship: "Cousin", position: { x: 70, y: 65 }, talked: false },
       { id: "dada", name: "Dada", emoji: "👴", relationship: "Grandfather", position: { x: 50, y: 50 }, talked: false },
     ],
     exchanges: [
       {
         memberId: "nani",
         dialogue: [
-          { speaker: "relative", fijiHindi: "Arre beta! Aaye tum! Khush hui mein!", english: "Oh dear! You came! I'm so happy!" },
+          { speaker: "relative", fijiHindi: "Arre beta! Aaya tum! Bahut khush hai ham!", english: "Oh dear! You came! I'm so happy!" },
           {
             speaker: "user", fijiHindi: "", english: "",
             options: [
               { fijiHindi: "Happy Birthday Nani! Bahut pyaar!", english: "Happy Birthday Nani! Much love!" },
-              { fijiHindi: "Nani, janamdin mubarak ho!", english: "Nani, happy birthday!" },
+              { fijiHindi: "Nani, janamdin mubarak!", english: "Nani, happy birthday!" },
             ]
           },
-          { speaker: "relative", fijiHindi: "Dhanyavaad beta! Khana khao, bahut banaya hai!", english: "Thank you dear! Eat food, made lots!" },
+          { speaker: "relative", fijiHindi: "Dhanyabad beta! Khana khao, bahut bana hai!", english: "Thank you dear! Eat food, made lots!" },
         ]
       },
       {
         memberId: "chacha",
         dialogue: [
-          { speaker: "relative", fijiHindi: "Beta! Kaise ho? Bade ho gaye!", english: "Dear! How are you? You've grown!" },
+          { speaker: "relative", fijiHindi: "Beta! Kaise hai? Bada ho gaya!", english: "Dear! How are you? You've grown!" },
           {
             speaker: "user", fijiHindi: "", english: "",
             options: [
-              { fijiHindi: "Namaste Chacha! Theek hoon.", english: "Hello Uncle! I'm fine." },
-              { fijiHindi: "Chacha! Aap kaise ho?", english: "Uncle! How are you?" },
+              { fijiHindi: "Namaste Chacha! Ham tik hai.", english: "Hello Uncle! I'm fine." },
+              { fijiHindi: "Chacha! Tum kaise hai?", english: "Uncle! How are you?" },
             ]
           },
-          { speaker: "relative", fijiHindi: "Achchha hai! Padhai kaisa chal raha?", english: "Good! How are studies going?" },
+          { speaker: "relative", fijiHindi: "Acha hai! Study kaisa chal raha?", english: "Good! How are studies going?" },
         ]
       },
       {
         memberId: "chachi",
         dialogue: [
-          { speaker: "relative", fijiHindi: "Arre! Kitna sundar lag rahe ho!", english: "Oh! You look so beautiful/handsome!" },
+          { speaker: "relative", fijiHindi: "Arre! Kitna sundar lag raha!", english: "Oh! You look so beautiful/handsome!" },
           {
             speaker: "user", fijiHindi: "", english: "",
             options: [
               { fijiHindi: "Shukriya Chachi!", english: "Thank you Aunty!" },
-              { fijiHindi: "Aap bhi bahut sundar ho Chachi!", english: "You also look beautiful Aunty!" },
+              { fijiHindi: "Tum bhi bahut sundar hai Chachi!", english: "You also look beautiful Aunty!" },
             ]
           },
-          { speaker: "relative", fijiHindi: "Chalo, mithai lo!", english: "Come, have sweets!" },
+          { speaker: "relative", fijiHindi: "Chalo, mita lo!", english: "Come, have sweets!" },
         ]
       },
       {
@@ -91,49 +92,51 @@ export const GATHERING_SCENARIOS: GatheringScenario[] = [
           {
             speaker: "user", fijiHindi: "", english: "",
             options: [
-              { fijiHindi: "Rohit! Mast hoon yaar!", english: "Rohit! I'm great bro!" },
-              { fijiHindi: "Bhai! Bahut din ho gaye!", english: "Bro! It's been so long!" },
+              { fijiHindi: "Rohit! Set hai yaar!", english: "Rohit! I'm great bro!" },
+              { fijiHindi: "Bhai! Bahut din ho gaya!", english: "Bro! It's been so long!" },
             ]
           },
-          { speaker: "relative", fijiHindi: "Haan yaar! Baad mein cricket khelenge?", english: "Yeah man! Play cricket later?" },
+          { speaker: "relative", fijiHindi: "Habrat yaar! Baad me cricket khelega?", english: "Yeah man! Play cricket later?" },
         ]
       },
       {
-        memberId: "bahin",
+        memberId: "bhaini",
         dialogue: [
-          { speaker: "relative", fijiHindi: "Didi/Bhaiya! Finally aaye!", english: "Sis/Bro! Finally you came!" },
+          { speaker: "relative", fijiHindi: "Didi/Bhaiya! Finally aaya!", english: "Sis/Bro! Finally you came!" },
           {
             speaker: "user", fijiHindi: "", english: "",
             options: [
-              { fijiHindi: "Priya! Miss kiya tumko!", english: "Priya! Missed you!" },
-              { fijiHindi: "Haan! Traffic bahut tha!", english: "Yeah! There was lots of traffic!" },
+              { fijiHindi: "Priya! Miss kiya tumka!", english: "Priya! Missed you!" },
+              { fijiHindi: "Ha! Traffic bahut tha!", english: "Yeah! There was lots of traffic!" },
             ]
           },
-          { speaker: "relative", fijiHindi: "Chalo selfie lete hai!", english: "Come let's take a selfie!" },
+          { speaker: "relative", fijiHindi: "Chalo selfie lete!", english: "Come let's take a selfie!" },
         ]
       },
       {
         memberId: "dada",
         dialogue: [
-          { speaker: "relative", fijiHindi: "Beta, idhar aao. Baitho mere paas.", english: "Dear, come here. Sit next to me." },
+          { speaker: "relative", fijiHindi: "Beta, idhar aa. Baitho hamar paas.", english: "Dear, come here. Sit next to me." },
           {
             speaker: "user", fijiHindi: "", english: "",
             options: [
-              { fijiHindi: "Ji Dada, kaise ho aap?", english: "Yes Grandpa, how are you?" },
-              { fijiHindi: "Dada! Bahut yaad kiya aapko!", english: "Grandpa! Missed you so much!" },
+              { fijiHindi: "Ha Dada, kaise hai tum?", english: "Yes Grandpa, how are you?" },
+              { fijiHindi: "Dada! Bahut yaad kiya tumka!", english: "Grandpa! Missed you so much!" },
             ]
           },
-          { speaker: "relative", fijiHindi: "Achchha hoon beta. Tum batao, sab theek?", english: "I'm good dear. You tell me, all well?" },
+          { speaker: "relative", fijiHindi: "Acha hai ham beta. Tum batao, sab tik?", english: "I'm good dear. You tell me, all well?" },
         ]
       },
     ],
     phrases: [
       "Janamdin mubarak - Happy birthday",
-      "Khush hui - I'm happy",
-      "Bade ho gaye - You've grown",
+      "Bahut khush hai - I'm very happy",
+      "Bada ho gaya - You've grown",
       "Sundar - Beautiful/handsome",
-      "Mithai - Sweets",
-      "Bahut din ho gaye - It's been so long",
+      "Mita - Sweets",
+      "Bahut din ho gaya - It's been so long",
+      "Set hai - I'm good (slang)",
+      "Habrat - Yeah/Agreed (slang)",
     ],
   },
   {
@@ -145,77 +148,77 @@ export const GATHERING_SCENARIOS: GatheringScenario[] = [
       { id: "baap", name: "Baap", emoji: "👨", relationship: "Father", position: { x: 30, y: 40 }, talked: false },
       { id: "bua", name: "Bua", emoji: "👩", relationship: "Aunt", position: { x: 70, y: 40 }, talked: false },
       { id: "phupha", name: "Phupha", emoji: "👨", relationship: "Uncle", position: { x: 25, y: 60 }, talked: false },
-      { id: "bahin", name: "Chhoti", emoji: "👧", relationship: "Sister", position: { x: 75, y: 60 }, talked: false },
+      { id: "bhaini", name: "Chhoti", emoji: "👧", relationship: "Sister", position: { x: 75, y: 60 }, talked: false },
     ],
     exchanges: [
       {
         memberId: "maa",
         dialogue: [
-          { speaker: "relative", fijiHindi: "Beta! Diya jalao, puja shuru hogi!", english: "Dear! Light the lamp, prayer will start!" },
+          { speaker: "relative", fijiHindi: "Beta! Diya jalao, puja shuru hoga!", english: "Dear! Light the lamp, prayer will start!" },
           {
             speaker: "user", fijiHindi: "", english: "",
             options: [
-              { fijiHindi: "Ji Maa, abhi karta hoon!", english: "Yes Mum, doing it now!" },
-              { fijiHindi: "Maa, diya kahan hai?", english: "Mum, where is the lamp?" },
+              { fijiHindi: "Ha Maa, abhi karta!", english: "Yes Mum, doing it now!" },
+              { fijiHindi: "Maa, diya kaha hai?", english: "Mum, where is the lamp?" },
             ]
           },
-          { speaker: "relative", fijiHindi: "Bahut achchha! Diwali mubarak beta!", english: "Very good! Happy Diwali dear!" },
+          { speaker: "relative", fijiHindi: "Bahut acha! Diwali mubarak beta!", english: "Very good! Happy Diwali dear!" },
         ]
       },
       {
         memberId: "baap",
         dialogue: [
-          { speaker: "relative", fijiHindi: "Beta, patakhe laye? Chalein bahar?", english: "Dear, got firecrackers? Shall we go outside?" },
+          { speaker: "relative", fijiHindi: "Beta, patakha laya? Chalo bahar?", english: "Dear, got firecrackers? Shall we go outside?" },
           {
             speaker: "user", fijiHindi: "", english: "",
             options: [
-              { fijiHindi: "Haan Baap! Chaliye!", english: "Yes Dad! Let's go!" },
-              { fijiHindi: "Baap, pehle prasad lete hai.", english: "Dad, let's have prasad first." },
+              { fijiHindi: "Ha Baap! Chalo!", english: "Yes Dad! Let's go!" },
+              { fijiHindi: "Baap, pehle prasad lete.", english: "Dad, let's have prasad first." },
             ]
           },
-          { speaker: "relative", fijiHindi: "Theek hai, pehle Lakshmi puja, phir patakhe!", english: "Okay, first Lakshmi prayer, then firecrackers!" },
+          { speaker: "relative", fijiHindi: "Tik hai, pehle Lakshmi puja, phir patakha!", english: "Okay, first Lakshmi prayer, then firecrackers!" },
         ]
       },
       {
         memberId: "bua",
         dialogue: [
-          { speaker: "relative", fijiHindi: "Arre mere ladoo! Diwali mubarak!", english: "Oh my sweetie! Happy Diwali!" },
+          { speaker: "relative", fijiHindi: "Arre hamar ladoo! Diwali mubarak!", english: "Oh my sweetie! Happy Diwali!" },
           {
             speaker: "user", fijiHindi: "", english: "",
             options: [
-              { fijiHindi: "Bua! Diwali mubarak! Kaise ho?", english: "Aunty! Happy Diwali! How are you?" },
-              { fijiHindi: "Bua! Bahut maza aaya aapko dekh ke!", english: "Aunty! So happy to see you!" },
+              { fijiHindi: "Bua! Diwali mubarak! Kaise hai?", english: "Aunty! Happy Diwali! How are you?" },
+              { fijiHindi: "Bua! Bahut maza aaya tumka dekh ke!", english: "Aunty! So happy to see you!" },
             ]
           },
-          { speaker: "relative", fijiHindi: "Ye lo, tumhare liye gift laayi!", english: "Here, brought a gift for you!" },
+          { speaker: "relative", fijiHindi: "Ye lo, tumre liye gift laya!", english: "Here, brought a gift for you!" },
         ]
       },
       {
         memberId: "phupha",
         dialogue: [
-          { speaker: "relative", fijiHindi: "Beta! Diwali ki badhaai! Kaisa hai sab?", english: "Dear! Diwali greetings! How's everything?" },
+          { speaker: "relative", fijiHindi: "Beta! Diwali ki badhai! Kaisa hai sab?", english: "Dear! Diwali greetings! How's everything?" },
           {
             speaker: "user", fijiHindi: "", english: "",
             options: [
-              { fijiHindi: "Phupha ji! Sab theek hai, aap sunao!", english: "Uncle! All good, you tell!" },
-              { fijiHindi: "Badhaai ho Phupha! Khushi ki baat hai!", english: "Congrats Uncle! It's a happy occasion!" },
+              { fijiHindi: "Phupha! Sab tik hai, tum sunao!", english: "Uncle! All good, you tell!" },
+              { fijiHindi: "Badhai Phupha! Khushi ke baat hai!", english: "Congrats Uncle! It's a happy occasion!" },
             ]
           },
-          { speaker: "relative", fijiHindi: "Bahut achchha! Rangoli dekhi? Bua ne banaya!", english: "Very good! Saw the rangoli? Bua made it!" },
+          { speaker: "relative", fijiHindi: "Bahut acha! Rangoli dekha? Bua bana hai!", english: "Very good! Saw the rangoli? Bua made it!" },
         ]
       },
       {
-        memberId: "bahin",
+        memberId: "bhaini",
         dialogue: [
-          { speaker: "relative", fijiHindi: "Didi/Bhaiya! Mere saath aao, rangoli mein help karo!", english: "Sis/Bro! Come with me, help with rangoli!" },
+          { speaker: "relative", fijiHindi: "Didi/Bhaiya! Hamar saath aao, rangoli me help karo!", english: "Sis/Bro! Come with me, help with rangoli!" },
           {
             speaker: "user", fijiHindi: "", english: "",
             options: [
-              { fijiHindi: "Haan Chhoti, chalo!", english: "Yes little one, let's go!" },
-              { fijiHindi: "Theek hai, kaunsa colour chahiye?", english: "Okay, which color do you need?" },
+              { fijiHindi: "Ha Chhoti, chalo!", english: "Yes little one, let's go!" },
+              { fijiHindi: "Tik hai, kaunchi colour chahiye?", english: "Okay, which color do you need?" },
             ]
           },
-          { speaker: "relative", fijiHindi: "Yay! Tum sabse achchhe ho!", english: "Yay! You're the best!" },
+          { speaker: "relative", fijiHindi: "Yay! Tum sabse acha hai!", english: "Yay! You're the best!" },
         ]
       },
     ],
@@ -223,10 +226,10 @@ export const GATHERING_SCENARIOS: GatheringScenario[] = [
       "Diwali mubarak - Happy Diwali",
       "Diya - Lamp",
       "Puja - Prayer/worship",
-      "Patakhe - Firecrackers",
+      "Patakha - Firecrackers",
       "Prasad - Blessed food offering",
       "Rangoli - Decorative floor art",
-      "Badhaai - Congratulations",
+      "Badhai - Congratulations",
     ],
   },
 ];

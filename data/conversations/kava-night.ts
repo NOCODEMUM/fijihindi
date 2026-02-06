@@ -1,4 +1,5 @@
-// Kava Night with Dad - Stories, proverbs, and life wisdom
+// Kava Night with Dad - AUTHENTIC FIJI HINDI
+// Stories, proverbs, and life wisdom
 
 export interface StorySegment {
   id: string;
@@ -34,24 +35,24 @@ export const KAVA_STORIES: KavaStory[] = [
   {
     id: "fiji-journey",
     title: "The Journey to Fiji",
-    titleHindi: "Fiji Ki Yatra",
+    titleHindi: "Fiji Ke Safar",
     topic: "Family History",
     segments: [
       {
         id: "1",
         dadSays: {
-          fijiHindi: "Beta, jaanta hai humara parivar Fiji kaise aaya?",
+          fijiHindi: "Beta, tum jaane hai hamar family Fiji kaise aaya?",
           english: "Dear, do you know how our family came to Fiji?",
         },
         userResponses: [
-          { fijiHindi: "Nahi Baap, batao na.", english: "No Dad, please tell." },
-          { fijiHindi: "Haan, thoda suna hai.", english: "Yes, heard a little." },
+          { fijiHindi: "Nai Baap, batao na.", english: "No Dad, please tell." },
+          { fijiHindi: "Ha, thora suna hai.", english: "Yes, heard a little." },
         ],
       },
       {
         id: "2",
         dadSays: {
-          fijiHindi: "Bahut saal pehle, India se jahaz aaya. Humara pardada us jahaz mein tha.",
+          fijiHindi: "Bahut saal pehle, India se jahaz aaya. Hamar pardada us jahaz me tha.",
           english: "Many years ago, a ship came from India. Our great-grandfather was on that ship.",
         },
         culturalNote: {
@@ -62,7 +63,7 @@ export const KAVA_STORIES: KavaStory[] = [
       {
         id: "3",
         dadSays: {
-          fijiHindi: "Unko 'Girmitiya' kehte the. Bahut mushkil zindagi thi, par unhone himmat nahi haari.",
+          fijiHindi: "Woke 'Girmitiya' bolta tha. Bahut mushkil life tha, par woke himmat nai haara.",
           english: "They were called 'Girmitiya'. Life was very hard, but they didn't lose courage.",
         },
         proverb: {
@@ -74,45 +75,45 @@ export const KAVA_STORIES: KavaStory[] = [
       {
         id: "4",
         dadSays: {
-          fijiHindi: "Isliye hamesha yaad rakhna - tum Girmitiya ke vanshaj ho. Garv ki baat hai.",
-          english: "So always remember - you are descendants of Girmitiyas. It's a matter of pride.",
+          fijiHindi: "Isliye hamesha yaad rakhna - tum Girmitiya ke bachcha hai. Proud baat hai.",
+          english: "So always remember - you are descendants of Girmitiyas. It's something to be proud of.",
         },
         userResponses: [
-          { fijiHindi: "Haan Baap, garv hai mujhe.", english: "Yes Dad, I'm proud." },
-          { fijiHindi: "Dhanyavaad batane ke liye.", english: "Thank you for telling me." },
+          { fijiHindi: "Ha Baap, proud hai ham.", english: "Yes Dad, I'm proud." },
+          { fijiHindi: "Dhanyabad batane ke liye.", english: "Thank you for telling me." },
         ],
       },
     ],
     phrases: [
-      "Parivar - Family",
+      "Family - Family",
       "Jahaz - Ship",
       "Pardada - Great-grandfather",
       "Himmat - Courage",
-      "Vanshaj - Descendants",
-      "Garv - Pride",
+      "Bachcha - Children/Descendants",
+      "Proud - Pride",
     ],
   },
   {
     id: "hard-work",
     title: "Value of Hard Work",
-    titleHindi: "Mehnat Ka Matlab",
+    titleHindi: "Mehnat Ke Baat",
     topic: "Life Lessons",
     segments: [
       {
         id: "1",
         dadSays: {
-          fijiHindi: "Beta, aaj kuch seekhne wali baat batata hoon.",
+          fijiHindi: "Beta, aaj kuch sikhne wala baat batata.",
           english: "Dear, today I'll tell you something worth learning.",
         },
         userResponses: [
-          { fijiHindi: "Ji Baap, suno raha hoon.", english: "Yes Dad, I'm listening." },
-          { fijiHindi: "Kya baat hai?", english: "What is it?" },
+          { fijiHindi: "Ha Baap, ham sunta.", english: "Yes Dad, I'm listening." },
+          { fijiHindi: "Kaunchi baat hai?", english: "What is it?" },
         ],
       },
       {
         id: "2",
         dadSays: {
-          fijiHindi: "Zindagi mein mehnat se bada koi shortcut nahi hai.",
+          fijiHindi: "Life me mehnat se bada koi shortcut nai hai.",
           english: "In life, there's no shortcut bigger than hard work.",
         },
         proverb: {
@@ -124,7 +125,7 @@ export const KAVA_STORIES: KavaStory[] = [
       {
         id: "3",
         dadSays: {
-          fijiHindi: "Dekho, humara dada subah 4 baje uthke khet mein jaata tha.",
+          fijiHindi: "Dekho, hamar dada subah 4 baje uth ke khet me jata tha.",
           english: "See, our grandfather used to wake up at 4 AM and go to the farm.",
         },
         culturalNote: {
@@ -135,18 +136,18 @@ export const KAVA_STORIES: KavaStory[] = [
       {
         id: "4",
         dadSays: {
-          fijiHindi: "Unki mehnat ki wajah se aaj hum yahan hai. Kabhi bhoolna mat.",
+          fijiHindi: "Woke mehnat ke wajah se aaj ham yaha hai. Kabhi bhoolna mat.",
           english: "Because of their hard work, we are here today. Never forget.",
         },
         userResponses: [
           { fijiHindi: "Samajh gaya Baap.", english: "I understand Dad." },
-          { fijiHindi: "Mehnat karunga hamesha.", english: "I'll always work hard." },
+          { fijiHindi: "Mehnat karega ham hamesha.", english: "I'll always work hard." },
         ],
       },
     ],
     phrases: [
       "Mehnat - Hard work",
-      "Zindagi - Life",
+      "Life - Life",
       "Khet - Farm/field",
       "Subah - Morning",
       "Bhoolna - To forget",
@@ -156,39 +157,39 @@ export const KAVA_STORIES: KavaStory[] = [
   {
     id: "fiji-culture",
     title: "Fiji Traditions",
-    titleHindi: "Fiji Ki Parampara",
+    titleHindi: "Fiji Ke Riwaj",
     topic: "Culture",
     segments: [
       {
         id: "1",
         dadSays: {
-          fijiHindi: "Beta, Fiji mein hum Indian aur Fijian dono culture follow karte hai.",
+          fijiHindi: "Beta, Fiji me ham Indian aur Fijian dono culture follow karta.",
           english: "Dear, in Fiji we follow both Indian and Fijian culture.",
         },
         userResponses: [
-          { fijiHindi: "Achchha? Kaise Baap?", english: "Really? How Dad?" },
-          { fijiHindi: "Haan, dekha hai maine.", english: "Yes, I've seen it." },
+          { fijiHindi: "Sachi? Kaise Baap?", english: "Really? How Dad?" },
+          { fijiHindi: "Ha, dekha hai ham.", english: "Yes, I've seen it." },
         ],
       },
       {
         id: "2",
         dadSays: {
-          fijiHindi: "Jaise kava - ye Fijian tradition hai jo humne adopt kiya.",
+          fijiHindi: "Jaise nangona - ye Fijian tradition hai jo ham adopt kiya.",
           english: "Like kava - this is a Fijian tradition we adopted.",
         },
         culturalNote: {
-          title: "Kava (Yaqona)",
-          content: "Kava is a traditional Fijian drink made from pepper plant roots. It's shared in a ceremony using a wooden bowl called 'tanoa'. Fiji Indians adopted this tradition and it's now part of their social gatherings.",
+          title: "Kava (Yaqona/Nangona)",
+          content: "Kava is a traditional Fijian drink made from pepper plant roots. It's shared in a ceremony using a wooden bowl called 'tanoa' and coconut cups called 'bilo'. Fiji Indians adopted this tradition and it's now part of their social gatherings.",
         },
       },
       {
         id: "3",
         dadSays: {
-          fijiHindi: "Aur hum apna khana, bhasha aur tyohaar bhi sambhaal ke rakhe.",
+          fijiHindi: "Aur ham apna khana, boli aur tyohaar bhi sambhaal ke rakha.",
           english: "And we also preserved our food, language and festivals.",
         },
         proverb: {
-          fijiHindi: "Apni mitti se pyaar karo.",
+          fijiHindi: "Apna mitti se pyaar karo.",
           english: "Love your own soil.",
           meaning: "Stay connected to your roots and culture.",
         },
@@ -196,49 +197,51 @@ export const KAVA_STORIES: KavaStory[] = [
       {
         id: "4",
         dadSays: {
-          fijiHindi: "Ye sab tumhara heritage hai. Isse zinda rakhna tumhara kaam hai.",
+          fijiHindi: "Ye sab tumre heritage hai. Iske zinda rakhna tumre kaam hai.",
           english: "All this is your heritage. Keeping it alive is your duty.",
         },
         userResponses: [
-          { fijiHindi: "Zaroor Baap, rakhunga yaad.", english: "Sure Dad, I'll remember." },
-          { fijiHindi: "Aapka heritage mera heritage.", english: "Your heritage is my heritage." },
+          { fijiHindi: "Zaroor Baap, yaad rakhega.", english: "Sure Dad, I'll remember." },
+          { fijiHindi: "Tumre heritage hamar heritage.", english: "Your heritage is my heritage." },
         ],
       },
     ],
     phrases: [
-      "Parampara - Tradition",
+      "Riwaj - Tradition",
       "Adopt karna - To adopt",
-      "Bhasha - Language",
+      "Boli - Language",
       "Tyohaar - Festival",
       "Heritage - Heritage",
       "Zinda - Alive",
+      "Nangona - Kava",
+      "Bilo - Coconut cup",
     ],
   },
   {
     id: "respect-elders",
     title: "Respecting Elders",
-    titleHindi: "Bado Ka Sammaan",
+    titleHindi: "Bada Log Ke Izzat",
     topic: "Values",
     segments: [
       {
         id: "1",
         dadSays: {
-          fijiHindi: "Beta, hamari sanskriti mein bado ka sammaan bahut zaroori hai.",
+          fijiHindi: "Beta, hamar culture me bada log ke izzat bahut zaroori hai.",
           english: "Dear, in our culture respecting elders is very important.",
         },
         userResponses: [
-          { fijiHindi: "Haan Baap, pata hai.", english: "Yes Dad, I know." },
-          { fijiHindi: "Kyun itna zaroori hai?", english: "Why is it so important?" },
+          { fijiHindi: "Ha Baap, pata hai.", english: "Yes Dad, I know." },
+          { fijiHindi: "Kaahe itna zaroori hai?", english: "Why is it so important?" },
         ],
       },
       {
         id: "2",
         dadSays: {
-          fijiHindi: "Bade log humse pehle duniya dekh chuke hai. Unka anubhav anmol hai.",
-          english: "Elders have seen the world before us. Their experience is priceless.",
+          fijiHindi: "Bada log hamse pehle duniya dekh chuka hai. Woke experience julum hai.",
+          english: "Elders have seen the world before us. Their experience is amazing/priceless.",
         },
         proverb: {
-          fijiHindi: "Bado ke ashirvaad se ghar banta hai.",
+          fijiHindi: "Bada log ke aashirwad se ghar banta hai.",
           english: "With elders' blessings, a home is built.",
           meaning: "Elders' blessings bring prosperity and happiness.",
         },
@@ -246,7 +249,7 @@ export const KAVA_STORIES: KavaStory[] = [
       {
         id: "3",
         dadSays: {
-          fijiHindi: "Jab bade baat kare, dhyan se suno. Unke pair chhoona bhoolna mat.",
+          fijiHindi: "Jab bada log baat kare, dhyan se suno. Woke pair chhoona bhoolna mat.",
           english: "When elders speak, listen carefully. Don't forget to touch their feet.",
         },
         culturalNote: {
@@ -257,22 +260,23 @@ export const KAVA_STORIES: KavaStory[] = [
       {
         id: "4",
         dadSays: {
-          fijiHindi: "Tum bhi ek din bade hoge. Tab samjhoge ye sab kitna mayne rakhta hai.",
-          english: "You'll also become an elder one day. Then you'll understand how much this all matters.",
+          fijiHindi: "Tum bhi ek din bada hoga. Tab samjhega ye sab kitna important hai.",
+          english: "You'll also become an elder one day. Then you'll understand how important this all is.",
         },
         userResponses: [
           { fijiHindi: "Sahi baat hai Baap.", english: "You're right Dad." },
-          { fijiHindi: "Hamesha yaad rakhunga.", english: "I'll always remember." },
+          { fijiHindi: "Hamesha yaad rakhega.", english: "I'll always remember." },
         ],
       },
     ],
     phrases: [
-      "Sammaan - Respect",
-      "Bade/Bado - Elders",
-      "Anubhav - Experience",
-      "Anmol - Priceless",
-      "Ashirvaad - Blessings",
+      "Izzat - Respect",
+      "Bada log - Elders",
+      "Experience - Experience",
+      "Julum - Amazing/Priceless",
+      "Aashirwad - Blessings",
       "Pair chhoona - Touch feet",
+      "Kaahe - Why",
     ],
   },
 ];
