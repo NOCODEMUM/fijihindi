@@ -40,6 +40,8 @@ export default function CallInterface({
     fijiHindi: string;
     english: string;
   }[]>([]);
+  const [audioMode, setAudioMode] = useState(false); // false = text mode, true = auto-play audio
+  const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(null);
 
   // Call timer
   useEffect(() => {
@@ -48,6 +50,31 @@ export default function CallInterface({
     }, 1000);
     return () => clearInterval(timer);
   }, []);
+
+  // Play audio for a specific message
+  const playMessageAudio = useCallback((text: string, messageIndex: number) => {
+    setPlayingMessageIndex(messageIndex);
+    speakFijiHindi(text, {
+      onEnd: () => setPlayingMessageIndex(null),
+      onError: () => setPlayingMessageIndex(null),
+    });
+  }, []);
+
+  // Move to next exchange after Nani's message
+  const proceedToNext = useCallback(() => {
+    const nextExchange = dialogue[currentIndex + 1];
+    if (nextExchange?.speaker === "user" && nextExchange.options) {
+      setCurrentIndex((prev) => prev + 1);
+      setShowOptions(true);
+    } else if (!nextExchange) {
+      // End call after last nani message
+      setTimeout(() => {
+        onCallEnd(callDuration, selectedResponses);
+      }, 1500);
+    } else {
+      setCurrentIndex((prev) => prev + 1);
+    }
+  }, [currentIndex, dialogue, callDuration, selectedResponses, onCallEnd]);
 
   // Handle dialogue progression
   const processCurrentExchange = useCallback(() => {
@@ -59,15 +86,7 @@ export default function CallInterface({
     }
 
     if (exchange.speaker === "nani") {
-      setIsNaniSpeaking(true);
       setShowOptions(false);
-
-      // Add to chat history
-      setChatHistory((prev) => [...prev, {
-        speaker: "nani",
-        fijiHindi: exchange.fijiHindi,
-        english: exchange.english,
-      }]);
 
       // Personalize with username if first exchange
       let text = exchange.fijiHindi;
@@ -75,38 +94,38 @@ export default function CallInterface({
         text = text.replace("beta", userName);
       }
 
-      speakFijiHindi(text, {
-        onEnd: () => {
-          setIsNaniSpeaking(false);
-          // Check if next is user turn
-          const nextExchange = dialogue[currentIndex + 1];
-          if (nextExchange?.speaker === "user" && nextExchange.options) {
-            setCurrentIndex((prev) => prev + 1);
-            setShowOptions(true);
-          } else if (!nextExchange) {
-            // End call after last nani message
-            setTimeout(() => {
-              onCallEnd(callDuration, selectedResponses);
-            }, 1500);
-          } else {
-            setCurrentIndex((prev) => prev + 1);
-          }
-        },
-        onError: () => {
-          setIsNaniSpeaking(false);
-          const nextExchange = dialogue[currentIndex + 1];
-          if (nextExchange?.speaker === "user" && nextExchange.options) {
-            setCurrentIndex((prev) => prev + 1);
-            setShowOptions(true);
-          } else {
-            setCurrentIndex((prev) => prev + 1);
-          }
-        },
-      });
+      // Add to chat history
+      setChatHistory((prev) => [...prev, {
+        speaker: "nani",
+        fijiHindi: text,
+        english: exchange.english,
+      }]);
+
+      if (audioMode) {
+        // Audio mode: auto-play and wait for completion
+        setIsNaniSpeaking(true);
+        speakFijiHindi(text, {
+          onEnd: () => {
+            setIsNaniSpeaking(false);
+            proceedToNext();
+          },
+          onError: () => {
+            setIsNaniSpeaking(false);
+            proceedToNext();
+          },
+        });
+      } else {
+        // Text mode: show message immediately, user proceeds manually
+        setIsNaniSpeaking(false);
+        // Auto-proceed to show options after a brief moment
+        setTimeout(() => {
+          proceedToNext();
+        }, 500);
+      }
     } else if (exchange.speaker === "user" && exchange.options) {
       setShowOptions(true);
     }
-  }, [currentIndex, dialogue, userName, callDuration, selectedResponses, onCallEnd]);
+  }, [currentIndex, dialogue, userName, callDuration, selectedResponses, onCallEnd, audioMode, proceedToNext]);
 
   useEffect(() => {
     processCurrentExchange();
@@ -151,9 +170,30 @@ export default function CallInterface({
     >
       {/* Call header */}
       <div className="text-center py-4 border-b border-gray-100 dark:border-gray-800 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm sticky top-0 z-10">
-        <NaniAvatar size="sm" isSpeaking={isNaniSpeaking} showName={false} />
-        <p className="text-sm font-medium text-charcoal dark:text-white mt-1">{callerName}</p>
-        <p className="text-xs text-green-500">{formatTime(callDuration)}</p>
+        <div className="flex items-center justify-between px-4">
+          {/* Audio mode toggle */}
+          <button
+            onClick={() => setAudioMode(!audioMode)}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm transition-all ${
+              audioMode
+                ? "bg-primary text-white"
+                : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
+            }`}
+          >
+            {audioMode ? "🔊" : "🔇"}
+            <span className="text-xs">{audioMode ? "Auto" : "Text"}</span>
+          </button>
+
+          {/* Caller info */}
+          <div className="text-center">
+            <NaniAvatar size="sm" isSpeaking={isNaniSpeaking} showName={false} />
+            <p className="text-sm font-medium text-charcoal dark:text-white mt-1">{callerName}</p>
+            <p className="text-xs text-green-500">{formatTime(callDuration)}</p>
+          </div>
+
+          {/* Spacer for balance */}
+          <div className="w-16" />
+        </div>
       </div>
 
       {/* Chat area */}
@@ -173,19 +213,41 @@ export default function CallInterface({
               )}
               <div
                 className={`
-                  max-w-[80%] rounded-2xl p-4 shadow-sm border
+                  max-w-[80%] rounded-2xl p-4 shadow-sm border relative
                   ${message.speaker === "nani"
                     ? "bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700 rounded-tl-none"
                     : "bg-primary text-white border-primary rounded-tr-none"
                   }
                 `}
               >
-                <p className={`text-lg font-medium ${message.speaker === "user" ? "text-white" : "text-charcoal dark:text-white"}`}>
+                <p className={`text-lg font-medium pr-8 ${message.speaker === "user" ? "text-white" : "text-charcoal dark:text-white"}`}>
                   {message.fijiHindi}
                 </p>
                 <p className={`text-sm mt-1 ${message.speaker === "user" ? "text-white/80" : "text-gray-500 dark:text-gray-400"}`}>
                   {message.english}
                 </p>
+                {/* Audio button */}
+                <button
+                  onClick={() => playMessageAudio(message.fijiHindi, index)}
+                  className={`absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-all ${
+                    playingMessageIndex === index
+                      ? "bg-primary text-white scale-110"
+                      : message.speaker === "user"
+                        ? "bg-white/20 text-white hover:bg-white/30"
+                        : "bg-gray-100 dark:bg-gray-700 text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-600"
+                  }`}
+                >
+                  {playingMessageIndex === index ? (
+                    <motion.span
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 0.5, repeat: Infinity }}
+                    >
+                      🔊
+                    </motion.span>
+                  ) : (
+                    <span className="text-sm">🔈</span>
+                  )}
+                </button>
               </div>
               {message.speaker === "user" && (
                 <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
@@ -196,8 +258,8 @@ export default function CallInterface({
           ))}
         </AnimatePresence>
 
-        {/* Speaking indicator */}
-        {isNaniSpeaking && (
+        {/* Speaking indicator (only in audio mode) */}
+        {isNaniSpeaking && audioMode && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -207,20 +269,23 @@ export default function CallInterface({
               <span className="text-xl">👵</span>
             </div>
             <div className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl rounded-tl-none p-4 shadow-sm">
-              <motion.div className="flex gap-1">
-                {[0, 1, 2].map((i) => (
-                  <motion.div
-                    key={i}
-                    animate={{ y: [0, -5, 0] }}
-                    transition={{
-                      duration: 0.5,
-                      repeat: Infinity,
-                      delay: i * 0.1,
-                    }}
-                    className="w-2 h-2 rounded-full bg-gray-400"
-                  />
-                ))}
-              </motion.div>
+              <div className="flex items-center gap-2">
+                <motion.div className="flex gap-1">
+                  {[0, 1, 2].map((i) => (
+                    <motion.div
+                      key={i}
+                      animate={{ y: [0, -5, 0] }}
+                      transition={{
+                        duration: 0.5,
+                        repeat: Infinity,
+                        delay: i * 0.1,
+                      }}
+                      className="w-2 h-2 rounded-full bg-primary"
+                    />
+                  ))}
+                </motion.div>
+                <span className="text-xs text-gray-500 ml-2">Speaking...</span>
+              </div>
             </div>
           </motion.div>
         )}
