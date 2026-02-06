@@ -6,6 +6,8 @@ import PhoneRinging from "./components/PhoneRinging";
 import CallInterface from "./components/CallInterface";
 import CallSummary from "./components/CallSummary";
 import { CONVERSATIONS, Conversation } from "@/data/conversations/intro-greeting";
+import { Faith } from "@/data/relationships";
+import { getCallerName, applyFaithTerms } from "@/lib/faithTerms";
 
 type CallPhase = "ringing" | "call" | "summary";
 
@@ -20,14 +22,16 @@ function CallPageContent() {
   const [userResponses, setUserResponses] = useState<string[]>([]);
   const [conversation, setConversation] = useState<Conversation | null>(null);
   const [userName, setUserName] = useState("");
+  const [userFaith, setUserFaith] = useState<Faith>("hindu");
 
   // Load conversation and user data
   useEffect(() => {
-    // Load user name
+    // Load user name and faith
     const stored = localStorage.getItem("fijihindi_user");
     if (stored) {
       const user = JSON.parse(stored);
       setUserName(user.name || "");
+      setUserFaith((user.faith as Faith) || "hindu");
     }
 
     // Load conversation
@@ -115,10 +119,23 @@ function CallPageContent() {
     );
   }
 
+  // Get faith-aware caller name
+  const callerName = getCallerName("nani", userFaith);
+
+  // Transform dialogue with faith-specific terms
+  const faithDialogue = conversation.dialogue.map((exchange) => ({
+    ...exchange,
+    fijiHindi: applyFaithTerms(exchange.fijiHindi, userFaith),
+    options: exchange.options?.map((opt) => ({
+      ...opt,
+      fijiHindi: applyFaithTerms(opt.fijiHindi, userFaith),
+    })),
+  }));
+
   if (phase === "ringing") {
     return (
       <PhoneRinging
-        callerName="Nani"
+        callerName={callerName}
         onAnswer={handleAnswer}
         onDecline={handleDecline}
       />
@@ -128,9 +145,10 @@ function CallPageContent() {
   if (phase === "call") {
     return (
       <CallInterface
-        dialogue={conversation.dialogue}
+        dialogue={faithDialogue}
         userName={userName}
         onCallEnd={handleCallEnd}
+        callerName={callerName}
       />
     );
   }

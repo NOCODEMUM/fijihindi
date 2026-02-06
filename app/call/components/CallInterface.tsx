@@ -21,12 +21,14 @@ interface CallInterfaceProps {
   dialogue: DialogueExchange[];
   userName?: string;
   onCallEnd: (duration: number, responses: string[]) => void;
+  callerName?: string;
 }
 
 export default function CallInterface({
   dialogue,
   userName,
-  onCallEnd
+  onCallEnd,
+  callerName = "Nani",
 }: CallInterfaceProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isNaniSpeaking, setIsNaniSpeaking] = useState(false);
@@ -150,7 +152,7 @@ export default function CallInterface({
       {/* Call header */}
       <div className="text-center py-4 border-b border-gray-100 dark:border-gray-800 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm sticky top-0 z-10">
         <NaniAvatar size="sm" isSpeaking={isNaniSpeaking} showName={false} />
-        <p className="text-sm font-medium text-charcoal dark:text-white mt-1">Nani</p>
+        <p className="text-sm font-medium text-charcoal dark:text-white mt-1">{callerName}</p>
         <p className="text-xs text-green-500">{formatTime(callDuration)}</p>
       </div>
 
